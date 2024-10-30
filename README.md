@@ -1,70 +1,101 @@
-# Getting Started with Create React App
+QLinx
+---
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📦 라이브러리 목록
 
-## Available Scripts
+### 1. **상태 관리**
 
-In the project directory, you can run:
+| 라이브러리              | 버전    | 설명                                                                                             | 적용 여부 |
+| ----------------------- | ------- |--------------------------------------------------------------------------------------------------|-------|
+| `@reduxjs/toolkit`      | ^1.8.5  | 상태 관리를 위한 Redux 공식 툴킷으로, 전역 상태 관리와 상태 슬라이스 기능을 제공                  | - [ ] |
+| `react-redux`           | ^9.0.4  | Redux와 React의 연결 라이브러리로, Redux store를 React 컴포넌트에서 사용할 수 있게 합니다.         | - [ ] |
+| `redux-persist`         | ^6.0.0  | Redux 상태를 로컬 스토리지에 저장하여 페이지 새로고침 후에도 상태를 유지할 수 있게 합니다.         | - [ ] |
 
-### `npm start`
+### 2. **라우팅 및 API 통신**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| 라이브러리              | 버전    | 설명                                                                                          | 적용 여부   |
+| ----------------------- | ------- | --------------------------------------------------------------------------------------------- |---------|
+| `react-router-dom`      | ^6.27.0  | React용 클라이언트 라우팅 라이브러리로, 페이지 간 이동 및 URL 관리를 제공                     | - [ v ] |
+| `axios`                 | ^1.7.7 | HTTP 클라이언트로, API 호출 및 서버와의 통신을 위한 라이브러리                                 | - [ v ] |
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 3. **다국어 지원**
 
-### `npm test`
+| 라이브러리              | 버전       | 설명                                                                                          | 적용 여부 |
+| ----------------------- | ---------- | --------------------------------------------------------------------------------------------- |-------|
+| `i18next`               | ^21.8.9    | 다국어 지원을 위한 라이브러리로, JSON 기반의 언어팩을 사용해 언어 전환 기능을 구현합니다.      | - [ ] |
+| `react-i18next`         | ^11.17.0   | i18next의 React 통합 라이브러리로, React와의 연동을 쉽게 합니다.                               | - [ ] |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 4. **컴포넌트 및 UI 관련 라이브러리**
 
-### `npm run build`
+| 라이브러리              | 버전       | 설명                                                                                          | 적용 여부 |
+| ----------------------- | ---------- | --------------------------------------------------------------------------------------------- |-------|
+| `@mui/material`         | ^5.10.9    | Material UI 컴포넌트 라이브러리로, UI의 일관성을 유지하면서도 기본적인 디자인을 제공           | - [ ] |
+| `styled-components`     | ^5.3.5     | CSS-in-JS 방식으로 컴포넌트에 스타일을 적용할 수 있게 해주는 라이브러리                        | - [ ] |
+| `react-modal`           | ^3.14.3    | 모달 창을 쉽게 구현할 수 있는 라이브러리                                                       | - [ ] |
+| `react-toastify`        | ^9.0.5     | 사용자에게 알림 메시지를 제공하여 인터페이스 피드백을 용이하게 해줍니다.                        | - [ ] |
+| `react-hook-form`       | ^7.22.5    | 폼 관리 및 유효성 검사를 위한 라이브러리로, 입력 데이터를 관리하고 검증할 수 있습니다.         | - [ ] |
+| `yup`                   | ^0.32.11   | 입력 데이터 유효성 검증을 위한 스키마 정의 라이브러리                                         | - [ ] |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 5. **데이터 그리드 및 테이블**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| 라이브러리              | 버전       | 설명                                                                                          | 적용 여부 |
+| ----------------------- | ---------- | --------------------------------------------------------------------------------------------- |-------|
+| `ag-grid-react`         | ^28.1.0    | 데이터 테이블을 위한 그리드 라이브러리로, 필터링과 페이징 등의 기능                            | - [ ] |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 6. **파일 처리 및 보고서 생성**
 
-### `npm run eject`
+| 라이브러리              | 버전       | 설명                                                                                          | 적용 여부 |
+| ----------------------- | ---------- | --------------------------------------------------------------------------------------------- |-------|
+| `jspdf`                 | ^2.4.0     | 데이터 및 보고서를 PDF로 변환하여 저장할 수 있게 해주는 PDF 생성 라이브러리                    | - [ ] |
+| `file-saver`            | ^2.0.5     | PDF 또는 Excel 파일의 다운로드 기능을 제공하는 라이브러리                                      | - [ ] |
+| `xlsx`                  | ^0.18.5    | Excel 파일 업로드 및 다운로드를 지원하며, 데이터 처리를 용이하게 해주는 라이브러리             | - [ ] |
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 7. **차트 및 시각화**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| 라이브러리              | 버전       | 설명                                                                                          | 적용 여부 |
+| ----------------------- | ---------- | --------------------------------------------------------------------------------------------- |-------|
+| `chart.js`              | ^3.7.1     | 데이터 시각화를 위한 차트 라이브러리                                                          | - [ ] |
+| `react-chartjs-2`       | ^4.0.1     | `Chart.js`의 React 통합 라이브러리로, 차트 컴포넌트를 쉽게 생성하고 커스터마이징할 수 있습니다. | - [ ] |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📂 디렉토리 구조
 
-## Learn More
+```
+QLinx/
+├── public/                    # 정적 파일 디렉토리
+├── src/                       # 애플리케이션 소스 코드 디렉토리
+│   ├── api/                   # API 요청 관련 모듈 (axios 설정 포함)
+│   ├── components/            # 공통 UI 컴포넌트
+│   ├── config/                # 환경 설정 파일 (i18n 설정 등)
+│   ├── features/              # 리덕스 기능별 슬라이스 및 모듈
+│   ├── hooks/                 # 커스텀 훅 모음
+│   ├── layout/                # 레이아웃 관련 컴포넌트 (Header, Sidebar 등)
+│   ├── lib/                   # 공통 라이브러리 및 유틸리티 함수 모음
+│   ├── pages/                 # 주요 페이지 컴포넌트
+│   ├── services/              # 비즈니스 로직
+│   ├── state/                 # 전역 상태 관리 (Redux Store)
+│   ├── App.js                 # 메인 App 컴포넌트
+│   └── index.js               # 진입점 파일
+├── package.json               # npm 종속성 및 스크립트 정의
+└── README.md                  # 프로젝트 개요 및 설명
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 📌 디렉토리 설명
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **public/**: HTML 및 이미지와 같은 정적 파일을 보관하는 디렉토리
+- **src/**: 프로젝트의 소스 코드가 위치한 메인 디렉토리
+  - **api/**: axios를 활용한 API 통신을 담당하는 모듈을 포함
+  - **components/**: 재사용 가능한 UI 컴포넌트를 관리
+  - **config/**: 프로젝트의 전역 설정을 관리
+  - **features/**: Redux 슬라이스가 위치한 폴더로, 상태 관리 관련 기능을 포함
+  - **hooks/**: React 커스텀 훅을 모아두는 폴더
+  - **layout/**: Header, Sidebar와 같은 공통 레이아웃을 관리
+  - **lib/**: 공통 라이브러리 및 유틸리티 함수 모음
+  - **pages/**: 페이지 단위 컴포넌트를 포함하여 각 화면을 구성
+  - **services/**: 비즈니스 로직을 위한 서비스 모듈을 관리
+  - **state/**: Redux store와 전역 상태 관리 설정을 포함
+  - ~~**styles/**: 전역 스타일 파일을 포함하여 스타일링을 관리~~ 각 화면별 디렉토리에 화면과 함게 배치하여 관리하는게 좋을 것 같다!
+  - **App.js**: 프로젝트의 메인 컴포넌트로, 전체 페이지 구조를 설정
+  - **index.js**: 애플리케이션 진입점으로, ReactDOM을 통해 렌더링이 시작된당 
