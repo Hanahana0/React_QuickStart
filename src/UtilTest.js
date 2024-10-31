@@ -1,6 +1,8 @@
 // UtilTest.js
 import React, {useState} from 'react';
 import util from './lib/Util'; // util.js 경로에 맞게 설정하세요
+import api from './api/axiosClient'
+
 
 function UtilTest() {
     // 각 기능에 필요한 독립적인 상태 변수 정의
@@ -18,6 +20,8 @@ function UtilTest() {
     const [localStorageInput, setLocalStorageInput] = useState({key: '', value: ''});
     const [localStorageKeyInput, setLocalStorageKeyInput] = useState('');
     const [sleepInput, setSleepInput] = useState(1000); // milliseconds
+
+    const [getApiValue, setApiValue] = useState(''); // milliseconds
     const [results, setResults] = useState({});
 
     // 엔터키 누르면 해당 기능 실행
@@ -99,6 +103,14 @@ function UtilTest() {
         });
     };
 
+    const apiCall = async () => {
+        const data = await api.post("/api/test",{key:"value"})
+        console.log(data);
+    }
+    const sleep = async () => {
+        const data = await api.get("/api/sleep",{key:"value"})
+        console.log(data);
+    }
     return (
         <div style={{padding: '20px'}}>
             <h2>유틸리티 함수 테스트</h2>
@@ -251,6 +263,12 @@ function UtilTest() {
                 <button onClick={() => handleTest('sleep')}>테스트 실행</button>
                 <span> 결과: {String(results.sleep)}</span>
             </div>
+            <div style={{border: '1px solid red', marginBottom: '20px'}}>
+                <h3>api post 데이터 날려보기</h3>
+                <input type="textarea" placeholder="데이터를 넣어주세요" value={getApiValue} onChange = {(e) => setApiValue(e.target.value)} />
+                <button onClick={apiCall}>실행</button>
+            </div>
+                <button onClick={sleep}>재욱이!!</button>
         </div>
     );
 }
