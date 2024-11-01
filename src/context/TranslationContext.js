@@ -4,7 +4,7 @@ import axiosClient from '../api/axiosClient';
 const TranslationContext = createContext();
 
 export const TranslationProvider = ({children}) => {
-    debugger;
+
     const [translations, setTranslations] = useState({});
     const [language, setLanguage] = useState('en'); // 기본 언어 설정
 

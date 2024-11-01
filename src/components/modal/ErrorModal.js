@@ -23,7 +23,7 @@ function ErrorModal({ isOpen, message, onClose }) {
         },
       }}
     >
-      <h2>오류 발생</h2>
+      <h2>오류 발생했다</h2>
       <p>{message}</p>
       <button onClick={onClose}>닫기</button>
     </Modal>

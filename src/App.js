@@ -1,45 +1,31 @@
-import React, {useState, useEffect} from 'react';
-import {BrowserRouter as Router, Routes, Route, Link, Navigate} from 'react-router-dom';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import {TranslationProvider} from './context/TranslationContext';
+import React, { useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { TranslationProvider } from './context/TranslationContext';
+import './layout/layout.css';
+import Content from "./layout/Content";
+import Header from "./layout/Header";
+import Sidebar from "./layout/Sidebar";
+import SidebarController from "./layout/Sidebar-controller";
 
 const App = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
-    useEffect(() => {
-        if (sessionStorage.getItem('user_session')) {
-            setIsLoggedIn(true);
-        }
-    }, []);
-
-    const handleLogin = () => {
-        setIsLoggedIn(true);
-    };
-
-    const handleLogout = () => {
-        sessionStorage.removeItem('user_session');
-        setIsLoggedIn(false);
-    };
+    const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible);
 
     return (
         <TranslationProvider>
             <Router>
-                <nav>
-                    {isLoggedIn ? (
-                        <>
-                            <Link to="/dashboard">대시보드</Link>
-                            <button onClick={handleLogout}>로그아웃</button>
-                        </>
-                    ) : (
-                        <Link to="/login">로그인</Link>
-                    )}
-                </nav>
-                <Routes>
-                    <Route path="/login"
-                           element={isLoggedIn ? <Navigate to="/dashboard"/> : <Login onLogin={handleLogin}/>}/>
-                    <Route path="/dashboard" element={isLoggedIn ? <Dashboard/> : <Navigate to="/login"/>}/>
-                </Routes>
+                <div className="app-container">
+                    <Header />
+                    <div className={`main-layout ${isSidebarVisible ? 'sidebar-open' : 'sidebar-closed'}`}>
+                        <Sidebar className={isSidebarVisible ? 'open' : 'closed'}/>
+                        <SidebarController
+                            isSidebarVisible={isSidebarVisible}
+                            onToggleSidebar={toggleSidebar}
+                        />
+                        <Content/>
+                    </div>
+                </div>
             </Router>
         </TranslationProvider>
     );
