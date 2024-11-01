@@ -11,7 +11,7 @@ const axiosClient = axios.create({
 // 요청 인터셉터
 axiosClient.interceptors.request.use(
     (config) => {
-        console.log("axiosClient.interceptors.request :: ", config);
+        // console.log("axiosClient.interceptors.request :: ", config);
         const token = sessionStorage.getItem('token'); // 로컬 스토리지에 저장된 토큰 가져오기
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -24,11 +24,11 @@ axiosClient.interceptors.request.use(
 // 응답 인터셉터
 axiosClient.interceptors.response.use(
     (response) => {
-        console.log("axiosClient.interceptors.response :: ", response);
+        // console.log("axiosClient.interceptors.response :: ", response);
         return response;
     },
     (error) => {
-        console.log("axiosClient.interceptors.response :: ", error);
+        // console.log("axiosClient.interceptors.response :: ", error);
         if (error.response && error.response.status === 401) {
             sessionStorage.removeItem('token');
             // window.location.href = '/login'; // 로그인 페이지로 리다이렉트

@@ -1,14 +1,14 @@
-// Sidebar.js
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
-import {useTranslations} from '../context/TranslationContext';
+import { useTranslations } from '../context/TranslationContext';
 import './layout.css';
 
-const Sidebar = ({className}) => {
-
-    const {translations} = useTranslations();
+const Sidebar = ({ className, onMenuClick }) => {
+    const { translations } = useTranslations();
     const [menus, setMenus] = useState([]);
     const [openMenus, setOpenMenus] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchMenus = async () => {
@@ -23,13 +23,19 @@ const Sidebar = ({className}) => {
         fetchMenus();
     }, []);
 
-    const toggleMenu = (menuId) => {
+    // 메뉴 클릭 시 경로 이동을 위한 함수
+    const handleMenuClick = (menu) => {
+        if (menu.path) {
+            onMenuClick(menu); // App.js로 메뉴 정보를 전달하여 탭 추가
+            navigate(menu.path); // 메뉴 경로로 이동
+        }
         setOpenMenus((prev) => ({
             ...prev,
-            [menuId]: !prev[menuId],
+            [menu.id]: !prev[menu.id],
         }));
     };
 
+    // 재귀적으로 메뉴를 렌더링하는 함수
     const renderMenus = (menuItems, parentId = null) => {
         return menuItems
             .filter(menu => menu.parentId === parentId)
@@ -37,7 +43,7 @@ const Sidebar = ({className}) => {
                 <div key={menu.id} className="menu-item">
                     <div
                         className={`menu-title ${!parentId ? 'root-menu' : ''}`}
-                        onClick={() => toggleMenu(menu.id)}
+                        onClick={() => handleMenuClick(menu)}
                     >
                         {translations[menu.title] || menu.title}
                         {menuItems.some(subMenu => subMenu.parentId === menu.id) && (
