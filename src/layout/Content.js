@@ -1,20 +1,11 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import ErrorHandling from '../lib/ErrorHandler';
-import { useTranslations } from '../context/TranslationContext';
-
-const loadComponent = (componentPath) => {
-    console.log(`Attempting to load component from: ${componentPath}`);
-    return React.lazy(() =>
-        import(`${componentPath}`).catch((error) => {
-            console.error(`Failed to load component at ${componentPath}:`, error);
-            return import('../pages/ErrorPage');
-        })
-    );
-};
+import ComponentMap from './ComponentMap';
+import ErrorPage from '../pages/ErrorPage';
+import { useTabs } from '../context/TabsContext';
 
 const Content = ({ tabs, activeTab, onTabClick, onTabClose }) => {
-    const { translations } = useTranslations();
+    const { getTabState, saveTabState } = useTabs();
 
     return (
         <main className="content">
@@ -24,9 +15,13 @@ const Content = ({ tabs, activeTab, onTabClick, onTabClose }) => {
                     <div
                         key={tab.path}
                         className={`tab ${activeTab === tab.path ? 'active' : ''}`}
-                        onClick={() => onTabClick(tab.path)}
+                        onClick={() => {
+                            if (activeTab !== tab.path) {
+                                onTabClick(tab.path);
+                            }
+                        }}
                     >
-                        {translations[tab.title] || tab.title}
+                        {tab.title}
                         <button
                             className="close-tab"
                             onClick={(e) => {
@@ -40,24 +35,24 @@ const Content = ({ tabs, activeTab, onTabClick, onTabClose }) => {
                 ))}
             </div>
 
-            {/* Routes 설정 */}
-            <ErrorHandling>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <Routes>
-                        {tabs.map(tab => {
-                            const Component = loadComponent(tab.componentPath); // 동적으로 컴포넌트를 로드
-                            return (
-                                <Route
-                                    key={tab.path}
-                                    path={tab.path}
-                                    element={<Component />}
+            <Suspense fallback={<div>Loading...</div>}>
+                <div className="tab-content">
+                    {tabs.map(tab => {
+                        const Component = ComponentMap[tab.path] || ErrorPage;
+                        return (
+                            <div
+                                key={tab.path}
+                                style={{ display: activeTab === tab.path ? 'block' : 'none' }}
+                            >
+                                <Component
+                                    savedState={getTabState(tab.path)}
+                                    onSaveState={(state) => saveTabState(tab.path, state)}
                                 />
-                            );
-                        })}
-                        <Route path="/" element={<h2>메인 페이지</h2>} />
-                    </Routes>
-                </Suspense>
-            </ErrorHandling>
+                            </div>
+                        );
+                    })}
+                </div>
+            </Suspense>
         </main>
     );
 };

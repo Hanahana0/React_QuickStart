@@ -20,11 +20,11 @@ const App = () => {
     const addTab = (menu) => {
         const existingTab = tabs.find(tab => tab.path === menu.path);
         if (existingTab) {
-            setActiveTab(existingTab.path); // 이미 열려 있는 탭을 활성화
+            setActiveTab(existingTab.path);
         } else {
-            const newTab = { title: menu.title, path: menu.path };
-            setTabs([...tabs, newTab]);
-            setActiveTab(newTab.path); // 새로 추가된 탭을 활성화
+            const newTab = { title: menu.title, path: menu.path, componentPath: menu.componentPath };
+            setTabs(prevTabs => [...prevTabs, newTab]);
+            setActiveTab(newTab.path);
         }
     };
 
