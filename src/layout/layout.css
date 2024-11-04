@@ -8,25 +8,8 @@
 .app-container {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* 필요에 따라 calc(100vh - some_padding)으로 조정 가능 */
-    overflow: hidden; /* 전체 페이지 스크롤 제거 */
-}
-
-/* 기존 main-layout 스타일 유지 */
-.main-layout {
-    display: flex;
-    flex: 1;
-    transition: margin-left 0.3s ease; /* 부드러운 이동 효과 */
-}
-
-/* Sidebar가 열렸을 때 */
-.main-layout.sidebar-open .content {
-    /*margin-left: 250px; !* Sidebar 너비만큼 여백 *!*/
-}
-
-/* Sidebar가 닫혔을 때 */
-.main-layout.sidebar-closed .content {
-    margin-left: 0; /* 여백 없음 */
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* Header 스타일 */
@@ -37,6 +20,10 @@
     padding: 10px 20px;
     background-color: #2e3b4e;
     color: white;
+    height: 50px;
+    z-index: 1000;
+    position: sticky;
+    top: 0;
 }
 
 .language-selector {
@@ -53,14 +40,23 @@
     background-color: #3B5998;
 }
 
+/* main-layout 스타일 */
+.main-layout {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 50px); /* Header 높이를 제외한 영역 차지 */
+    overflow: hidden;
+}
+
 /* Sidebar 및 Controller 스타일 */
 .sidebar-container {
     display: flex;
     transition: transform 0.3s ease;
 }
+
 .sidebar {
     width: 250px;
-    height: 100vh;
+    height: 100%;
     background-color: #2C3E50;
     color: #ECF0F1;
     padding: 20px;
@@ -69,15 +65,15 @@
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-    /*overflow-y: auto; !* 스크롤을 sidebar에 추가 *!*/
     transition: transform 0.3s ease, width 0.3s ease;
 }
+
 .sidebar-menu-wrapper {
     border-radius: 4px;
     max-height: 80%;
-    overflow-y: auto; /* 스크롤을 sidebar에 추가 */
+    overflow-y: auto;
 }
-/* 스크롤바 커스터마이징 */
+
 .sidebar-menu-wrapper::-webkit-scrollbar {
     width: 8px;
 }
@@ -106,12 +102,11 @@
 }
 
 .menu-items {
-    flex: 1; /* 내부 메뉴 영역이 남은 공간을 차지 */
+    flex: 1;
 }
 
 /* 메뉴 및 서브메뉴 스타일 */
 .menu-title {
-    /*padding: 10px;*/
     padding: 4px;
     display: flex;
     justify-content: space-between;
@@ -184,38 +179,85 @@
 /* Content 스타일 */
 .content {
     flex: 1;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    transition: margin-left 0.3s ease; /* 부드러운 이동 효과 */
-    border: 1px solid red;
 }
 
-
+/* 탭 컨테이너 */
 .tabs {
     display: flex;
-    gap: 8px;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
-
-.tab {
-    padding: 8px 12px;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
-
-.tab.active {
+    overflow-x: auto; /* 가로 스크롤 활성화 */
+    white-space: nowrap; /* 탭들이 한 줄에 유지되도록 설정 */
     background-color: #fff;
-    border-bottom: 2px solid blue;
+    border-bottom: 1px solid #ddd;
+    padding: 3px 0;
+    z-index: 999;
+    /* scrollbar-width: thin; Firefox용 얇은 스크롤바 - 필요시 주석 해제 */
 }
 
+/* 스크롤바 커스터마이징 */
+.tabs::-webkit-scrollbar {
+    height: 6px; /* 스크롤바 높이 설정 */
+}
+
+.tabs::-webkit-scrollbar-track {
+    background: #f0f0f0; /* 스크롤 트랙 색상 */
+}
+
+.tabs::-webkit-scrollbar-thumb {
+    background-color: #3B5998; /* 스크롤바 색상 */
+    border-radius: 4px;
+}
+
+.tabs::-webkit-scrollbar-thumb:hover {
+    background-color: #2e7dff; /* 스크롤바 호버 시 색상 */
+}
+
+/* 개별 탭 스타일 */
+.tab {
+    padding: 10px 16px;
+    color: #555;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 1.4vh;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap; /* 탭 텍스트가 한 줄로 유지되도록 설정 */
+    cursor: pointer;
+    transition: color 0.3s ease;
+    position: relative;
+    flex: 0 0 auto; /* 각 탭이 한 줄에 고정되도록 설정 */
+}
+
+.tab:hover {
+    color: #2e7dff;
+}
+
+/* 활성화된 탭 스타일 */
+.tab.active {
+    color: #2e7dff;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #2e7dff;
+    border-radius: 2px;
+}
+
+/* 닫기 버튼 스타일 */
 .close-tab {
     margin-left: 8px;
     background: none;
     border: none;
     color: red;
     cursor: pointer;
+}
+
+.tab-content {
+    padding: 10px 0 0 10px;
 }
