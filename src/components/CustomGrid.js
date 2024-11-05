@@ -11,7 +11,7 @@ const CustomGrid = ({ columnDefs, rowData, onGridReady, ...props }) => {
     // 다국어 설정을 고려하여 columnDefs를 업데이트
     const translatedColumnDefs = columnDefs.map(col => ({
         ...col,
-        headerName: translations[col.headerName] || col.headerName, // 다국어 변환 적용
+        headerName: translations[col.headerName], // 다국어 변환 적용
     }));
 
     return (

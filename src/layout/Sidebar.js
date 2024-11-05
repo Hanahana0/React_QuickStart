@@ -1,3 +1,4 @@
+// Sidebar.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
@@ -5,7 +6,7 @@ import { useTranslations } from '../context/TranslationContext';
 import './layout.css';
 
 const Sidebar = ({ className, onMenuClick }) => {
-    const { translations } = useTranslations();
+    const { getTranslation } = useTranslations();
     const [menus, setMenus] = useState([]);
     const [openMenus, setOpenMenus] = useState({});
     const navigate = useNavigate();
@@ -23,10 +24,9 @@ const Sidebar = ({ className, onMenuClick }) => {
         fetchMenus();
     }, []);
 
-    // 메뉴 클릭 시 경로 이동을 위한 함수
     const handleMenuClick = (menu) => {
         if (menu.path) {
-            onMenuClick(menu); // App.js로 메뉴 정보를 전달하여 탭 추가
+            onMenuClick(menu); // App.js에서 중복 확인 및 추가 처리
             navigate(menu.path); // 메뉴 경로로 이동
         }
         setOpenMenus((prev) => ({
@@ -35,7 +35,6 @@ const Sidebar = ({ className, onMenuClick }) => {
         }));
     };
 
-    // 재귀적으로 메뉴를 렌더링하는 함수
     const renderMenus = (menuItems, parentId = null) => {
         return menuItems
             .filter(menu => menu.parentId === parentId)
@@ -45,7 +44,7 @@ const Sidebar = ({ className, onMenuClick }) => {
                         className={`menu-title ${!parentId ? 'root-menu' : ''}`}
                         onClick={() => handleMenuClick(menu)}
                     >
-                        {translations[menu.title] || menu.title}
+                        {getTranslation(menu.title)}
                         {menuItems.some(subMenu => subMenu.parentId === menu.id) && (
                             <span className={`arrow ${openMenus[menu.id] ? 'open' : ''}`}>
                                 {openMenus[menu.id] ? '▼' : '▶'}
@@ -58,6 +57,10 @@ const Sidebar = ({ className, onMenuClick }) => {
                 </div>
             ));
     };
+
+    if (!menus.length) {
+        return <div>Loading...</div>; // 메뉴 로드 중 로딩 표시
+    }
 
     return (
         <div className={`sidebar ${className}`}>

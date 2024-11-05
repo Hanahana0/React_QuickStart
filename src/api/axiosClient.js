@@ -13,7 +13,6 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
     (config) => {
         const token = sessionStorage.getItem('token'); // sessionStorage에서 토큰 가져오기
-        debugger;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }

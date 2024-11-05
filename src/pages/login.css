@@ -7,7 +7,7 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    background: linear-gradient(135deg, #ffffff, #ebf0ff);
 }
 
 .login-box {
@@ -77,7 +77,8 @@ h2 {
 
 /* Login button */
 .login-button {
-    background: linear-gradient(90deg, #6e8efb, #a777e3);
+    /*background: linear-gradient(90deg, #6e8efb, #a777e3);*/
+    background: #8ea7fd;
     border: none;
     color: white;
     padding: 10px;
@@ -89,7 +90,8 @@ h2 {
 }
 
 .login-button:hover {
-    background: linear-gradient(90deg, #5a75d8, #9450b5);
+    /*background: linear-gradient(90deg, #5a75d8, #9450b5);*/
+    background: #83a0f1;
 }
 
 /* Sign up link */

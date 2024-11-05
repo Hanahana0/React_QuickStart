@@ -15,8 +15,8 @@ const Header = () => {
             </div>
             <div className="header-right">
                 <select onChange={handleLanguageChange} className="language-selector">
-                    <option value="en">En</option>
                     <option value="ko">Ko</option>
+                    <option value="en">En</option>
                 </select>
             </div>
         </header>

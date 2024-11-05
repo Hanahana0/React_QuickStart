@@ -18,7 +18,18 @@ const AppContent = () => {
     const [activeTab, setActiveTab] = useState(null);
 
     const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible);
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, loading } = useAuth(); // 로딩 상태 가져오기
+
+    if (loading) {
+        return <div>Loading...</div>; // 로딩 중일 때 표시할 내용
+    }
+
+    const handleMenuClick = (menu) => {
+        if (!tabs.some((tab) => tab.path === menu.path)) {
+            setTabs([...tabs, menu]);
+        }
+        setActiveTab(menu.path);
+    };
 
     return (
         <Routes>
@@ -31,7 +42,8 @@ const AppContent = () => {
                             <div className={`sidebar-container ${isSidebarVisible ? 'open' : 'closed'}`}>
                                 <Sidebar
                                     className={isSidebarVisible ? 'open' : 'closed'}
-                                    onMenuClick={(menu) => setTabs([...tabs, menu])}
+                                    onMenuClick={handleMenuClick}
+                                    tabs={tabs}
                                 />
                                 <SidebarController
                                     isSidebarVisible={isSidebarVisible}
@@ -43,6 +55,7 @@ const AppContent = () => {
                                 activeTab={activeTab}
                                 onTabClick={setActiveTab}
                                 onTabClose={(path) => setTabs(tabs.filter(tab => tab.path !== path))}
+                                setTabs={setTabs}
                             />
                         </div>
                     </>

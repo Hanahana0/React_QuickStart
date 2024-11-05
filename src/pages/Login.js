@@ -25,7 +25,7 @@ const Login = () => {
     return (
         <div className="login-container">
             <div className="login-box">
-                <h2>로그인</h2>
+                <h2>QLinx</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
                         <label>아이디</label>

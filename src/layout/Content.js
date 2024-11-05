@@ -11,7 +11,7 @@ const ItemTypes = {
 };
 
 const DraggableTab = ({ tab, index, moveTab, activeTab, onTabClick, onTabClose }) => {
-    const { translations } = useTranslations();
+    const { getTranslation } = useTranslations();
     const [{ isDragging }, drag] = useDrag({
         type: ItemTypes.TAB,
         item: { index },
@@ -37,7 +37,7 @@ const DraggableTab = ({ tab, index, moveTab, activeTab, onTabClick, onTabClose }
             onClick={() => onTabClick(tab.path)}
             style={{ opacity: isDragging ? 0.5 : 1 }}
         >
-            {translations[tab.title] || tab.title}
+            {getTranslation(tab.title)}
             <button
                 className="close-tab"
                 onClick={(e) => {
