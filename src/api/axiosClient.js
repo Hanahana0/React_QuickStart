@@ -4,6 +4,7 @@ import { notify } from '../components/toast';
 
 /**
  *  1. Error Handling (오류 처리)
+ *     notify 로 감싸서 화면ㅇ ㅔ오류내용 보여주도록 현재는 해놨으나 추후 모달 만들어서 다국어 입혀서 해당 컴포넌트가 보여지도록 해야함!!
  *  2. Loading Indicator (로딩 인디케이터)
  *  3. Request Retry Mechanism (재요청 메커니즘) 필요없을듯 ?
  *  4. 환경 변수 및 설정 공통화
@@ -64,7 +65,9 @@ axiosClient.interceptors.response.use(
             originalRequest._retry = true;  // 무한 재시도 방지
 
             try {
+                console.log("accessToken start")
                 const response = await axiosClient.post('/auth/refresh-token'); // 쿠키에 있는 리프레시 토큰으로 요청
+                console.log("accessToken response", response)
                 const newAccessToken = response.data.accessToken;
                 sessionStorage.setItem('accessToken', newAccessToken); // 엑세스 토큰만 세션 스토리지에 저장
                 originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
