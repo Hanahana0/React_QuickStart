@@ -1,0 +1,25 @@
+/* 전체 화면을 덮는 오버레이 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(220, 220, 220, 0.7); /* 투명한 배경 */
+    z-index: 9999; /* 화면 최상단에 표시 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: all; /* 오버레이 위에서 모든 이벤트 차단 */
+}
+
+.loading-spinner {
+    width: 100px;
+    height: 100px;
+}
+
+.loading-spinner img {
+    width: 40%;
+    height: 40%;
+}

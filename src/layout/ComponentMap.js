@@ -3,6 +3,7 @@ import React from 'react';
 const ComponentMap = {
     '/adm/menuManagement': React.lazy(() => import('../pages/adm/menuManagement/MenuManagement')),
     '/adm/codeManagement': React.lazy(() => import('../pages/adm/codeManagement/CodeManagement')),
+    '/adm/userManagement': React.lazy(() => import('../pages/adm/userManagement/UserManagement')),
     // 다른 컴포넌트들도 추가 가능
 };
 

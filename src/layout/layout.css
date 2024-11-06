@@ -62,7 +62,6 @@
     padding: 20px;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease, width 0.3s ease;
@@ -259,5 +258,10 @@
 }
 
 .tab-content {
+    height: 100%;
     padding: 10px 0 0 10px;
+}
+
+.tab-content-wrapper {
+    height: 100%;
 }

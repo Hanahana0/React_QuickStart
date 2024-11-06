@@ -58,9 +58,9 @@ const Sidebar = ({ className, onMenuClick }) => {
             ));
     };
 
-    if (!menus.length) {
-        return <div>Loading...</div>; // 메뉴 로드 중 로딩 표시
-    }
+    // if (!menus.length) {
+    //     return <div>Loading...</div>; // 메뉴 로드 중 로딩 표시
+    // }
 
     return (
         <div className={`sidebar ${className}`}>

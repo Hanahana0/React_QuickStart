@@ -95,12 +95,13 @@ const Content = ({ tabs, activeTab, onTabClick, onTabClose, setTabs }) => {
                     ))}
                 </div>
 
-                <Suspense fallback={<div>Loading...</div>}>
+                {/*<Suspense fallback={<div>Loading...</div>}>*/}
                     <div className="tab-content">
                         {tabs.map((tab) => {
                             const Component = ComponentMap[tab.path] || ErrorPage;
                             return (
                                 <div
+                                    className="tab-content-wrapper"
                                     key={tab.path}
                                     style={{ display: activeTab === tab.path ? 'block' : 'none' }}
                                 >
@@ -112,7 +113,7 @@ const Content = ({ tabs, activeTab, onTabClick, onTabClose, setTabs }) => {
                             );
                         })}
                     </div>
-                </Suspense>
+                {/*</Suspense>*/}
             </main>
         </DndProvider>
     );

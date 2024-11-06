@@ -1,0 +1,13 @@
+/* CustomGrid.css */
+
+.new-cell {
+    background-color: lightblue !important; /* 신규 행 파란색 */
+}
+
+.loaded-cell {
+    background-color: lightgreen !important; /* 조회된 행 초록색 */
+}
+
+.updated-cell {
+    background-color: lightyellow !important; /* 수정된 행 노란색 */
+}

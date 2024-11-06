@@ -31,8 +31,10 @@ const Login = () => {
                         <label>아이디</label>
                         <input
                             type="text"
+                            lang="en" // 기본 언어를 영어로 설정
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            autoFocus={true}
                             required
                         />
                     </div>
