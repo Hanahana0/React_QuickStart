@@ -34,7 +34,6 @@ const tabsSlice = createSlice({
         updateTabTitles: (state, action) => {
             // Redux의 translation 상태에서 번역 데이터 참조
             const translations = action.payload.translations;
-            debugger;
             state.tabs = state.tabs.map(tab => ({
                 ...tab,
                 title: translations[tab.title] || tab.title, // 번역된 제목으로 업데이트

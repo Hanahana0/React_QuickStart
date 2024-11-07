@@ -1,14 +1,13 @@
 // src/layout/Sidebar.js
-import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import axiosClient from '../api/axiosClient';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { openTab } from '../state/tabsSlice';
 import useTranslations from '../hooks/useTranslations';
-import {useDispatch} from 'react-redux';
-import {openTab} from '../state/tabsSlice'; // openTab 액션 임포트
+import axiosClient from '../api/axiosClient';
 import './layout.css';
 
-const Sidebar = ({className}) => {
-    const {getTranslation} = useTranslations();
+const Sidebar = ({ className }) => {
+    const { getTranslation } = useTranslations();
     const [menus, setMenus] = useState([]);
     const [openMenus, setOpenMenus] = useState({});
     const dispatch = useDispatch();
@@ -28,8 +27,7 @@ const Sidebar = ({className}) => {
 
     const handleMenuClick = (menu) => {
         if (menu.path) {
-            // Redux 상태에 탭 추가
-            dispatch(openTab({path: menu.path, title: getTranslation(menu.title)}));
+            dispatch(openTab({ path: menu.path, title: menu.title }));
         }
         setOpenMenus((prev) => ({
             ...prev,

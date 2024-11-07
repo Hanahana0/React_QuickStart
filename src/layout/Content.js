@@ -13,8 +13,8 @@ const ItemTypes = {
 };
 
 const DraggableTab = ({ tab, index, moveTab, activeTab, onTabClick, onTabClose }) => {
-    const { getTranslation } = useTranslations(); // 번역 함수 가져오기
-    const translatedTitle = getTranslation(tab.title); // 메뉴명에 번역 적용
+    const { getTranslation } = useTranslations();
+    const translatedTitle = getTranslation(tab.title);
 
     const [{ isDragging }, drag] = useDrag({
         type: ItemTypes.TAB,
@@ -34,11 +34,20 @@ const DraggableTab = ({ tab, index, moveTab, activeTab, onTabClick, onTabClose }
         },
     });
 
+    // 마우스 휠 버튼으로 탭을 닫기 위한 이벤트 핸들러
+    const handleAuxClick = (e) => {
+        if (e.button === 1) { // 마우스 휠 버튼 클릭 (중간 버튼)
+            e.preventDefault();
+            onTabClose(tab.path);
+        }
+    };
+
     return (
         <div
             ref={(node) => drag(drop(node))}
             className={`tab ${activeTab === tab.path ? 'active' : ''}`}
             onClick={() => onTabClick(tab.path)}
+            onAuxClick={handleAuxClick} // 마우스 휠 클릭 핸들러 추가
             style={{ opacity: isDragging ? 0.5 : 1 }}
         >
             {translatedTitle}
