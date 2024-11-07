@@ -1,10 +1,11 @@
-import React, { useState, useTransition } from 'react';
+// src/App.js
+import React, { useEffect, useState } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { TabsProvider } from './context/TabsContext';
-import { TranslationProvider } from './context/TranslationContext';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { LoadingProvider, useLoading } from './context/LoadingContext';
-import { setLoadingFunctions } from './api/axiosClient'; // 추가
+import { store, persistor } from './state/store';
+import { setLoadingFunctions } from './api/axiosClient';
+import { showLoading, hideLoading } from './state/loadingSlice';
 
 import './layout/layout.css';
 import LoadingIndicator from './components/LoadingIndicator';
@@ -13,61 +14,49 @@ import Header from "./layout/Header";
 import Sidebar from "./layout/Sidebar";
 import SidebarController from "./layout/Sidebar-controller";
 import Login from './pages/Login';
-
 import { ToastContainer } from 'react-toastify';
 
 const AppContent = () => {
+    const dispatch = useDispatch();
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-    const [tabs, setTabs] = useState([]);
-    const [activeTab, setActiveTab] = useState(null);
-    const [isPending, startTransition] = useTransition();
+
+    useEffect(() => {
+        // 로딩 함수 설정을 여기서 수행하여 dispatch 사용 가능하게 설정
+        setLoadingFunctions(
+            () => dispatch(showLoading()),
+            () => dispatch(hideLoading())
+        );
+    }, [dispatch]);
 
     const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible);
-    const { isLoggedIn, loading } = useAuth();
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const isLoading = useSelector((state) => state.loading.isLoading);
 
-    if (loading) {
+    if (isLoading) {
         return <LoadingIndicator />;
     }
 
-    const handleMenuClick = (menu) => {
-        startTransition(() => {
-            if (!tabs.some((tab) => tab.path === menu.path)) {
-                setTabs([...tabs, menu]);
-            }
-            setActiveTab(menu.path);
-        });
-    };
 
     return (
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="*" element={
                 isLoggedIn ? (
-                    <TranslationProvider>
-                        <>
-                            <Header />
-                            <div className="main-layout">
-                                <div className={`sidebar-container ${isSidebarVisible ? 'open' : 'closed'}`}>
-                                    <Sidebar
-                                        className={isSidebarVisible ? 'open' : 'closed'}
-                                        onMenuClick={handleMenuClick}
-                                        tabs={tabs}
-                                    />
-                                    <SidebarController
-                                        isSidebarVisible={isSidebarVisible}
-                                        onToggleSidebar={toggleSidebar}
-                                    />
-                                </div>
-                                <Content
-                                    tabs={tabs}
-                                    activeTab={activeTab}
-                                    onTabClick={setActiveTab}
-                                    onTabClose={(path) => setTabs(tabs.filter(tab => tab.path !== path))}
-                                    setTabs={setTabs}
+                    <>
+                        <Header />
+                        <div className="main-layout">
+                            <div className={`sidebar-container ${isSidebarVisible ? 'open' : 'closed'}`}>
+                                <Sidebar
+                                    className={isSidebarVisible ? 'open' : 'closed'}
+                                />
+                                <SidebarController
+                                    isSidebarVisible={isSidebarVisible}
+                                    onToggleSidebar={toggleSidebar}
                                 />
                             </div>
-                        </>
-                    </TranslationProvider>
+                            <Content/>
+                        </div>
+                    </>
                 ) : <Navigate to="/login" />
             } />
         </Routes>
@@ -75,24 +64,14 @@ const AppContent = () => {
 };
 
 const App = () => (
-    <LoadingProvider>
-        <LoadingContextConnector /> {/* LoadingContextConnector 추가 */}
-        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
-        <AuthProvider>
-            <TabsProvider>
-                <Router>
-                    <LoadingIndicator /> {/* 로딩 인디케이터를 항상 렌더링 */}
-                    <AppContent />
-                </Router>
-            </TabsProvider>
-        </AuthProvider>
-    </LoadingProvider>
+    <Provider store={store}>
+        <PersistGate loading={<LoadingIndicator />} persistor={persistor}>
+            <Router>
+                <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+                <AppContent />
+            </Router>
+        </PersistGate>
+    </Provider>
 );
-
-const LoadingContextConnector = () => {
-    const { showLoading, hideLoading } = useLoading();
-    setLoadingFunctions(showLoading, hideLoading); // axiosClient에 로딩 함수 설정
-    return null; // 실제 렌더링하지 않음
-};
 
 export default App;

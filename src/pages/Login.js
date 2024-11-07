@@ -1,11 +1,12 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useDispatch } from 'react-redux';
+import { login } from '../state/authSlice';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
 
 const Login = () => {
-    const { login } = useAuth();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -13,7 +14,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await login(username, password);
+        const result = await dispatch(login(username, password));
 
         if (result.success) {
             navigate('/'); // 로그인 성공 시

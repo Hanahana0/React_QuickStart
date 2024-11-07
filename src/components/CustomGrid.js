@@ -1,6 +1,6 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { useTranslations } from '../context/TranslationContext';
+import useTranslations from '../hooks/useTranslations'; // Redux 기반으로 변경된 useTranslations 가져오기
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import './CustomGrid.css';

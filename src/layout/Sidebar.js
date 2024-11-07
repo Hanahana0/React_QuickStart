@@ -1,15 +1,18 @@
-// Sidebar.js
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/layout/Sidebar.js
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
-import { useTranslations } from '../context/TranslationContext';
+import useTranslations from '../hooks/useTranslations';
+import {useDispatch} from 'react-redux';
+import {openTab} from '../state/tabsSlice'; // openTab 액션 임포트
 import './layout.css';
 
-const Sidebar = ({ className, onMenuClick }) => {
-    const { getTranslation } = useTranslations();
+const Sidebar = ({className}) => {
+    const {getTranslation} = useTranslations();
     const [menus, setMenus] = useState([]);
     const [openMenus, setOpenMenus] = useState({});
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchMenus = async () => {
@@ -26,8 +29,8 @@ const Sidebar = ({ className, onMenuClick }) => {
 
     const handleMenuClick = (menu) => {
         if (menu.path) {
-            onMenuClick(menu); // App.js에서 중복 확인 및 추가 처리
-            navigate(menu.path); // 메뉴 경로로 이동
+            // Redux 상태에 탭 추가
+            dispatch(openTab({path: menu.path, title: getTranslation(menu.title)}));
         }
         setOpenMenus((prev) => ({
             ...prev,
@@ -57,10 +60,6 @@ const Sidebar = ({ className, onMenuClick }) => {
                 </div>
             ));
     };
-
-    // if (!menus.length) {
-    //     return <div>Loading...</div>; // 메뉴 로드 중 로딩 표시
-    // }
 
     return (
         <div className={`sidebar ${className}`}>

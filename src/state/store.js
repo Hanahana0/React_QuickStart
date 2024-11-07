@@ -1,38 +1,43 @@
 // src/state/store.js
-import {configureStore, createSlice} from '@reduxjs/toolkit';
-import api from '../api/axiosClient';
+import {configureStore} from '@reduxjs/toolkit';
+import {persistStore, persistReducer} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import {combineReducers} from 'redux';
 
-const languageSlice = createSlice({
-    name: 'language',
-    initialState: {
-        translations: {},
-        currentLang: 'en',
-    },
-    reducers: {
-        setTranslations: (state, action) => {
-            state.translations = action.payload;
-        },
-        setCurrentLang: (state, action) => {
-            state.currentLang = action.payload;
-        },
-    },
-});
+import authReducer from './authSlice';
+import loadingReducer from './loadingSlice';
+import tabsReducer from './tabsSlice';
+import translationReducer from './translationSlice'; // 새로 추가
 
-export const {setTranslations, setCurrentLang} = languageSlice.actions;
 
-export const fetchTranslations = (lang) => async (dispatch) => {
-    try {
-        const response = await api.get(`/api/translation?lang=${lang}`);
-        dispatch(setTranslations(response.data));
-    } catch (error) {
-        console.error('Failed to fetch translations:', error);
-    }
+const persistConfig = {
+    key: 'root',
+    storage,
+    whitelist: ['auth', 'tabs', 'translation'] // 상태를 유지할 슬라이스 지정 유저정보도 들어와야하고 다국어 정보도 들어와야할지 고민좀해보자
 };
 
-const store = configureStore({
-    reducer: {
-        language: languageSlice.reducer,
-    },
+const rootReducer = combineReducers({
+    auth: authReducer,
+    loading: loadingReducer,
+    tabs: tabsReducer,
+    translation: translationReducer
 });
 
-export default store;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                // Ignore these action types
+                ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+                // Ignore these field paths in all actions
+                ignoredPaths: ['register', 'rehydrate']
+            }
+        })
+});
+
+const persistor = persistStore(store);
+
+export {store, persistor};
