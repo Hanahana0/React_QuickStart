@@ -13,7 +13,7 @@ const ItemTypes = {
 };
 
 const DraggableTab = ({ tab, index, moveTab, activeTab, onTabClick, onTabClose }) => {
-    const { getTranslation } = useTranslations();
+    const { getTranslation } = useTranslations(); // 번역 함수 가져오기
     const translatedTitle = getTranslation(tab.title); // 메뉴명에 번역 적용
 
     const [{ isDragging }, drag] = useDrag({

@@ -1,28 +1,31 @@
-// src/hooks/useTranslations.js
-import { useSelector, useDispatch } from 'react-redux';
-import { changeLanguage, fetchTranslations } from '../state/translationSlice';
-import { useEffect } from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchTranslations} from '../state/translationSlice';
+import {useEffect} from 'react';
 
 const useTranslations = () => {
     const dispatch = useDispatch();
-    const { translations, language } = useSelector((state) => state.translation);
+    const translations = useSelector((state) => state.translation.translations);
+    const language = useSelector((state) => state.translation.language);
 
+    // 언어가 변경될 때마다 번역을 불러오도록 설정
     useEffect(() => {
-        dispatch(fetchTranslations(language)); // language가 변경될 때마다 번역 데이터를 가져옴
+        if (language) {
+            dispatch(fetchTranslations(language));
+        }
     }, [language, dispatch]);
 
+    // 안전하게 번역 키를 반환하는 함수
     const getTranslation = (key) => {
-        return translations[key] || key;
+        return translations && translations[key] ? translations[key] : key;
     };
 
-    const changeLanguageHandler = (lang) => {
-        if (language !== lang) {
-            dispatch(changeLanguage(lang)); // 언어 변경
-            dispatch(fetchTranslations(lang)); // 언어 변경 후 번역 데이터 새로고침
+    const changeLanguage = (lang) => {
+        if (lang !== language) {
+            dispatch(fetchTranslations(lang));
         }
     };
 
-    return { getTranslation, changeLanguage: changeLanguageHandler };
+    return {getTranslation, changeLanguage, language};
 };
 
 export default useTranslations;

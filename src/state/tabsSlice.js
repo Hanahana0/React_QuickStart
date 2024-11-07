@@ -1,12 +1,13 @@
 // src/state/tabsSlice.js
 import { createSlice } from '@reduxjs/toolkit';
+import { useSelector } from 'react-redux';
 
 const tabsSlice = createSlice({
     name: 'tabs',
     initialState: {
         tabs: [],
         activeTab: null,
-        tabStates: {}
+        tabStates: {},
     },
     reducers: {
         openTab: (state, action) => {
@@ -19,26 +20,28 @@ const tabsSlice = createSlice({
         closeTab: (state, action) => {
             const path = action.payload;
             state.tabs = state.tabs.filter(tab => tab.path !== path);
-
             if (state.activeTab === path) {
-                const remainingTabs = state.tabs;
-                state.activeTab = remainingTabs.length > 0 ? remainingTabs[0].path : null;
+                state.activeTab = state.tabs.length > 0 ? state.tabs[0].path : null;
             }
-
             delete state.tabStates[path];
-        },
-        saveTabState: (state, action) => {
-            const { path, stateData } = action.payload;
-            state.tabStates[path] = stateData;
         },
         setActiveTab: (state, action) => {
             state.activeTab = action.payload;
         },
         setTabs: (state, action) => {
-            state.tabs = action.payload; // 전체 탭을 업데이트
+            state.tabs = action.payload;
+        },
+        updateTabTitles: (state, action) => {
+            // Redux의 translation 상태에서 번역 데이터 참조
+            const translations = action.payload.translations;
+            debugger;
+            state.tabs = state.tabs.map(tab => ({
+                ...tab,
+                title: translations[tab.title] || tab.title, // 번역된 제목으로 업데이트
+            }));
         }
     }
 });
 
-export const { openTab, closeTab, saveTabState, setActiveTab, setTabs } = tabsSlice.actions;
+export const { openTab, closeTab, setActiveTab, setTabs, updateTabTitles } = tabsSlice.actions;
 export default tabsSlice.reducer;

@@ -93,6 +93,9 @@ axiosClient.interceptors.response.use(
                 case 500:
                     notify("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.", "error");
                     break;
+                case 999:
+                    // 로그인 실패시임 이떈 처리할 거 없음
+                    break;
                 default:
                     notify("요청을 처리하는 중 문제가 발생했습니다.", "error");
             }

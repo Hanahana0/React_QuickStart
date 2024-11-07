@@ -11,7 +11,6 @@ const Sidebar = ({className}) => {
     const {getTranslation} = useTranslations();
     const [menus, setMenus] = useState([]);
     const [openMenus, setOpenMenus] = useState({});
-    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     useEffect(() => {

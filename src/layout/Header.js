@@ -1,12 +1,22 @@
 // src/layout/Header.js
 import React from 'react';
-import useTranslations from '../hooks/useTranslations';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTranslations } from '../state/translationSlice';
+import { updateTabTitles } from '../state/tabsSlice';
 
 const Header = () => {
-    const { getTranslation, changeLanguage } = useTranslations();
+    const dispatch = useDispatch();
+    const language = useSelector((state) => state.translation.language);
+    const translations = useSelector((state) => state.translation.translations);
 
     const handleLanguageChange = (event) => {
-        changeLanguage(event.target.value);
+        const selectedLanguage = event.target.value;
+        if (selectedLanguage !== language) {
+            // 언어를 변경하고 새로운 번역 데이터를 가져온 후 탭 제목을 업데이트
+            dispatch(fetchTranslations(selectedLanguage)).then(() => {
+                dispatch(updateTabTitles({ translations }));
+            });
+        }
     };
 
     return (
@@ -16,7 +26,7 @@ const Header = () => {
             </div>
 
             <div className="header-right">
-                <select onChange={handleLanguageChange} className="language-selector">
+                <select value={language} onChange={handleLanguageChange} className="language-selector">
                     <option value="ko">Ko</option>
                     <option value="en">En</option>
                 </select>
