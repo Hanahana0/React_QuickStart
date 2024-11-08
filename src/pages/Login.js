@@ -5,19 +5,20 @@ import {login} from '../state/authSlice';
 import {useNavigate} from 'react-router-dom';
 import './login.css';
 import {notify} from "../components/toast";
+import axiosClient from "../api/axiosClient";
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [username, setUsername] = useState('');
+    const [userid, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const domainKey = "test";
+    const domainKey = "GUS";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await dispatch(login(domainKey, username, password));
+        const result = await dispatch(login(domainKey, userid, password));
         if (result.success) {
             // navigate('/'); // 로그인 성공 시
             setError('');
@@ -27,6 +28,11 @@ const Login = () => {
         }
     };
 
+    const test = async () => {
+        // return;
+        const test = axiosClient.post('/test.do', {P_ACT: 'srchTest', PLIST: [ {ID: 77777},{ID: 11111} ] });
+        console.log(test);
+    }
     return (
         <div className="login-container">
             <div className="login-box">
@@ -37,7 +43,7 @@ const Login = () => {
                         <input
                             type="text"
                             lang="en" // 기본 언어를 영어로 설정
-                            value={username}
+                            value={userid}
                             onChange={(e) => setUsername(e.target.value)}
                             autoFocus={true}
                             required
@@ -55,6 +61,8 @@ const Login = () => {
                     {error && <div className="error-message">{error}</div>} {/* 에러 메시지 표시 */}
                     <button type="submit" className="login-button">로그인</button>
                 </form>
+
+                <button onClick={test()}> 테스트</button>
             </div>
         </div>
     );

@@ -28,7 +28,7 @@ export const setLoadingFunctions = (show, hide) => {
 
 const axiosClient = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL,
-    timeout: 2000,
+    // timeout: 2000,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -74,39 +74,39 @@ axiosClient.interceptors.response.use(
         const originalRequest = error.config;
 
         // 401 에러 및 _retry 플래그 확인
-        if (error.response && error.response.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
-
-            try {
-                // 로컬스토리지에서 리프레시 토큰 가져오기
-                const refreshToken = localStorage.getItem('refreshToken');
-
-                if (!refreshToken) {
-                    throw new Error("No refresh token available");
-                }
-
-                // refresh-token 요청을 위한 ApiRequest 생성
-                const request = new ApiRequest('REFRESH_TOKEN', { refreshToken });
-
-                // refresh-token 요청
-                const response = await axiosClient.post('/auth/refresh-token', request);
-                const newAccessToken = response.RTN_DATA.accessToken;
-
-                // 새로운 엑세스 토큰 저장 및 원래 요청 헤더 업데이트
-                localStorage.setItem('accessToken', newAccessToken);
-                originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-
-                // 원래의 요청을 재시도
-                return axiosClient(originalRequest);
-            } catch (refreshError) {
-                // refresh-token 요청이 실패한 경우 처리
-                notify("세션이 만료되었습니다. 다시 로그인해주세요.", "warning");
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                // window.location.href = '/login'; // 로그인 페이지로 리다이렉트
-                return Promise.reject(refreshError);
-            }
-        }
+        // if (error.response && error.response.status === 401 && !originalRequest._retry) {
+        //     originalRequest._retry = true;
+        //
+        //     try {
+        //         // 로컬스토리지에서 리프레시 토큰 가져오기
+        //         const refreshToken = localStorage.getItem('refreshToken');
+        //
+        //         if (!refreshToken) {
+        //             throw new Error("No refresh token available");
+        //         }
+        //
+        //         // refresh-token 요청을 위한 ApiRequest 생성
+        //         const request = new ApiRequest('REFRESH_TOKEN', { refreshToken });
+        //
+        //         // refresh-token 요청
+        //         const response = await axiosClient.post('/auth/refresh-token', request);
+        //         const newAccessToken = response.RTN_DATA.accessToken;
+        //
+        //         // 새로운 엑세스 토큰 저장 및 원래 요청 헤더 업데이트
+        //         localStorage.setItem('accessToken', newAccessToken);
+        //         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        //
+        //         // 원래의 요청을 재시도
+        //         return axiosClient(originalRequest);
+        //     } catch (refreshError) {
+        //         // refresh-token 요청이 실패한 경우 처리
+        //         notify("세션이 만료되었습니다. 다시 로그인해주세요.", "warning");
+        //         localStorage.removeItem('accessToken');
+        //         localStorage.removeItem('refreshToken');
+        //         // window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+        //         return Promise.reject(refreshError);
+        //     }
+        // }
 
         if (error.code === 'ECONNABORTED') {
             notify("요청 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.", "error");

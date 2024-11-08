@@ -38,12 +38,12 @@ export const authSlice = createSlice({
 
 export const {setLoginStart, setLoginSuccess, setLoginFailure, setLogout} = authSlice.actions;
 
-export const login = (domainKey, username, password) => async (dispatch) => {
+export const login = (domainKey, userId, password) => async (dispatch) => {
     dispatch(setLoginStart());
 
     try {
         // ApiRequest를 사용해 일관된 요청 구조 생성
-        const request = new ApiRequest('srchTest', {},{domainKey:domainKey, username:username, password:password});
+        const request = new ApiRequest('login', {},{DOMAINKEY:domainKey, USERID:userId, PASSWORD:password});
         // const request = new ApiRequest('LOGIN', {
         //     domain: domain,
         //     username: username,
