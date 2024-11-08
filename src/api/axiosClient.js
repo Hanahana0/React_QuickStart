@@ -39,13 +39,12 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
     (config) => {
 
-
         if (typeof showLoading === 'function') showLoading(); // 함수가 설정된 경우에만 호출
 
         // ApiRequest를 통해 요청 데이터 구조 통일
-        const requestData = new ApiRequest(config.data.P_ACT,config.data.P_PARAM);
+        // const requestData = new ApiRequest(config.data.P_ACT,config.data.P_PARAM);
         // requestData.validate(); // 요청 데이터 유효성 검사
-        config.data = requestData;
+        // config.data = requestData;
 
         const accessToken = localStorage.getItem('accessToken');
         if (accessToken) {

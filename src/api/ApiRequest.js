@@ -2,9 +2,12 @@
  * API 수신 전용 데이타 구조체
  */
 export default class ApiRequest {
-    constructor(action, params = {}) {
+    constructor(action, params = {}, extraFields = {}) {
         this.P_ACT = action;     // Controller에서 분기 처리할 스트링 값
         this.P_PARAM = params;   // 데이터가 담길 키-오브젝트 구조
+
+        // extraFields 객체의 모든 키-값 쌍을 현재 인스턴스에 추가
+        Object.assign(this, extraFields);
     }
 
     // 데이터 유효성 검사 (예: P_ACT 필드 확인)

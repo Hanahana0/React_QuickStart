@@ -12,14 +12,16 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const domain = "test";
+
+    const domainKey = "test";
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await dispatch(login(domain, username, password));
+        const result = await dispatch(login(domainKey, username, password));
         if (result.success) {
-            navigate('/'); // 로그인 성공 시
+            // navigate('/'); // 로그인 성공 시
             setError('');
-            notify("로그인성공!" );
+            // notify("로그인성공!" );
         } else {
             setError(result.message); // 로그인 실패 시 에러 메시지 설정
         }
