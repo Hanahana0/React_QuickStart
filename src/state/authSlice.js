@@ -64,11 +64,10 @@ export const login = (domain, username, password) => async (dispatch) => {
 
         dispatch(setLoginSuccess(userInfo));
         // 로그인 성공 시 추가 데이터 로드 (필요시 활성화)
-        const menuList = await comService.getMenus();
-        console.log(menuList);
-        debugger;
-        const translationLangList = await comService.getTranslationAll();
-        console.log(translationLangList);
+        // const menuList = await comService.getMenus();
+        // console.log(menuList);
+        // const translationLangList = await comService.getTranslationAll();
+        // console.log(translationLangList);
 
         return {success: true};
     } catch (error) {

@@ -38,8 +38,7 @@ const axiosClient = axios.create({
 // 요청 인터셉터
 axiosClient.interceptors.request.use(
     (config) => {
-        debugger;
-        console.log("interceptors request >>> ", config)
+
 
         if (typeof showLoading === 'function') showLoading(); // 함수가 설정된 경우에만 호출
 
@@ -52,7 +51,6 @@ axiosClient.interceptors.request.use(
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
-
         return config;
     },
     (error) => {
@@ -64,17 +62,14 @@ axiosClient.interceptors.request.use(
 // 응답 인터셉터
 axiosClient.interceptors.response.use(
     (response) => {
-        debugger;
-        console.log("interceptors response >>> ", response)
+
         if (typeof hideLoading === 'function') hideLoading(); // 함수가 설정된 경우에만 호출
 
         // ApiResponse를 통해 응답 데이터를 가공하여 통일된 형식으로 반환
         const apiResponse = new ApiResponse(response.data);
-
         return apiResponse;
     },
     async (error) => {
-        console.log("interceptors response error >>> " , error);
         if (typeof hideLoading === 'function') hideLoading(); // 함수가 설정된 경우에만 호출
 
         const originalRequest = error.config;
@@ -84,11 +79,21 @@ axiosClient.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                // refresh-token 요청
-                const response = await axiosClient.post('/auth/refresh-token');
-                const newAccessToken = response.data.RTN_DATA.accessToken;
+                // 로컬스토리지에서 리프레시 토큰 가져오기
+                const refreshToken = localStorage.getItem('refreshToken');
 
-                // 새로운 토큰 저장 및 요청 헤더 업데이트
+                if (!refreshToken) {
+                    throw new Error("No refresh token available");
+                }
+
+                // refresh-token 요청을 위한 ApiRequest 생성
+                const request = new ApiRequest('REFRESH_TOKEN', { refreshToken });
+
+                // refresh-token 요청
+                const response = await axiosClient.post('/auth/refresh-token', request);
+                const newAccessToken = response.RTN_DATA.accessToken;
+
+                // 새로운 엑세스 토큰 저장 및 원래 요청 헤더 업데이트
                 localStorage.setItem('accessToken', newAccessToken);
                 originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 
@@ -98,6 +103,7 @@ axiosClient.interceptors.response.use(
                 // refresh-token 요청이 실패한 경우 처리
                 notify("세션이 만료되었습니다. 다시 로그인해주세요.", "warning");
                 localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
                 // window.location.href = '/login'; // 로그인 페이지로 리다이렉트
                 return Promise.reject(refreshError);
             }

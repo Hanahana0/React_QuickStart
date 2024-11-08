@@ -43,7 +43,6 @@ const UserManagement = ({tab}) => {
     ];
     // 데이터조회
     const handleSearch = async () => {
-        console.log("searchConditions >>> ", searchConditions)
         const filteredConditions = Object.entries(searchConditions)
             .reduce((acc, [key, value]) => {
                 if (value) acc[key] = value; // 빈 값이 아닌 조건만 필터링
@@ -52,7 +51,7 @@ const UserManagement = ({tab}) => {
 
         try {
             const response = await UserSelect(filteredConditions);
-            const data = response.data.map(item => ({...item, status: 'loaded'}));
+            const data = response.map(item => ({...item, status: 'loaded'}));
             setRowData(data);
         } catch (error) {
             console.error("Failed to fetch users:", error);

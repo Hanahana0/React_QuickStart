@@ -1,33 +1,41 @@
 // src/layout/Sidebar.js
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { openTab } from '../state/tabsSlice';
+import React, {useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {openTab} from '../state/tabsSlice';
 import useTranslations from '../hooks/useTranslations';
 import axiosClient from '../api/axiosClient';
+import comnService from '../comnServices/ComService'
 import './layout.css';
+import comService from "../comnServices/ComService";
 
-const Sidebar = ({ className }) => {
-    const { getTranslation } = useTranslations();
+const Sidebar = ({className}) => {
+    const {getTranslation} = useTranslations();
     const [menus, setMenus] = useState([]);
     const [openMenus, setOpenMenus] = useState({});
     const dispatch = useDispatch();
 
+    // useEffect(() => {
+    //     const fetchMenus = async () => {
+    //         try {
+    //             const response = await axiosClient.get('/api/menus');
+    //             setMenus(response.data);
+    //         } catch (error) {
+    //             console.error("메뉴 데이터를 가져오는 중 오류가 발생했습니다:", error);
+    //         }
+    //     };
+    //
+    //     fetchMenus();
+    // }, []);
     useEffect(() => {
-        const fetchMenus = async () => {
-            try {
-                const response = await axiosClient.get('/api/menus');
-                setMenus(response.data);
-            } catch (error) {
-                console.error("메뉴 데이터를 가져오는 중 오류가 발생했습니다:", error);
-            }
-        };
-
-        fetchMenus();
-    }, []);
-
+        const menuCall = async () => {
+            const menuList = await comService.getMenus();
+            setMenus(menuList.RTN_DATA)
+        }
+        menuCall();
+    },[])
     const handleMenuClick = (menu) => {
         if (menu.path) {
-            dispatch(openTab({ path: menu.path, title: menu.title }));
+            dispatch(openTab({path: menu.path, title: menu.title}));
         }
         setOpenMenus((prev) => ({
             ...prev,

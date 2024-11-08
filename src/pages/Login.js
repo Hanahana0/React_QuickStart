@@ -17,7 +17,7 @@ const Login = () => {
         e.preventDefault();
         const result = await dispatch(login(domain, username, password));
         if (result.success) {
-            // navigate('/'); // 로그인 성공 시
+            navigate('/'); // 로그인 성공 시
             setError('');
             notify("로그인성공!" );
         } else {

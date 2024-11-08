@@ -2,7 +2,6 @@
  * 공통으로 사용할 api 모음!
  */
 import axiosClient from '../api/axiosClient';
-import ApiResponse from '../api/ApiResponse';
 import ApiRequest from "../api/ApiRequest";
 
 // 전체 메뉴 조회
@@ -25,7 +24,6 @@ const getMenus = async () => {
 // 전체 언어 조회
 const getTranslationAll = async () => {
     try {
-        debugger;
         const request = new ApiRequest('TRANSLATION', {});
         const response = await axiosClient.post('/api/translation', request);
 
