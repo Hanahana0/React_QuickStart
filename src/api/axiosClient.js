@@ -1,14 +1,15 @@
 // src/api/axiosClient.js
 import axios from 'axios';
-import { notify } from '../components/toast';
+import ApiRequest from "./ApiRequest";
+import ApiResponse from "./ApiResponse";
+import {notify} from '../components/toast';
 
 let showLoading = null;
 let hideLoading = null;
 
-
 /**
  *  1. Error Handling (오류 처리)
- *     notify 로 감싸서 화면ㅇ ㅔ오류내용 보여주도록 현재는 해놨으나 추후 모달 만들어서 다국어 입혀서 해당 컴포넌트가 보여지도록 해야함!!
+ *     notify 로 감싸서 화면에 오류내용 보여주도록 현재는 해놨으나 추후 모달 만들어서 다국어 입혀서 해당 컴포넌트가 보여지도록 해야함!!
  *  2. Loading Indicator (로딩 인디케이터)
  *  3. Request Retry Mechanism (재요청 메커니즘) 필요없을듯 ?
  *  4. 환경 변수 및 설정 공통화
@@ -16,7 +17,7 @@ let hideLoading = null;
  *  6. 응답 데이터 가공 및 통일화
  *  7. Token Expiration Handling (토큰 만료 처리)
  *  8. API 호출 성공/실패 콜백 함수 공통화
- *  9. React Context 를 활용한 전역 상태 관리 !!! 이미 로그인할때 처리할거라 따로 필요없을듯??????
+ *  9. React Context 를 활용한 전역 상태 관리 !!! 이미 로그인할 때 처리할 거라 따로 필요없을듯??????
  */
 
 // 로딩 상태 관리 함수 설정
@@ -37,11 +38,21 @@ const axiosClient = axios.create({
 // 요청 인터셉터
 axiosClient.interceptors.request.use(
     (config) => {
+        debugger;
+        console.log("interceptors request >>> ", config)
+
         if (typeof showLoading === 'function') showLoading(); // 함수가 설정된 경우에만 호출
-        const accessToken = sessionStorage.getItem('accessToken');
+
+        // ApiRequest를 통해 요청 데이터 구조 통일
+        const requestData = new ApiRequest(config.data.P_ACT,config.data.P_PARAM);
+        // requestData.validate(); // 요청 데이터 유효성 검사
+        config.data = requestData;
+
+        const accessToken = localStorage.getItem('accessToken');
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
+
         return config;
     },
     (error) => {
@@ -53,28 +64,42 @@ axiosClient.interceptors.request.use(
 // 응답 인터셉터
 axiosClient.interceptors.response.use(
     (response) => {
+        debugger;
+        console.log("interceptors response >>> ", response)
         if (typeof hideLoading === 'function') hideLoading(); // 함수가 설정된 경우에만 호출
-        return response;
+
+        // ApiResponse를 통해 응답 데이터를 가공하여 통일된 형식으로 반환
+        const apiResponse = new ApiResponse(response.data);
+
+        return apiResponse;
     },
     async (error) => {
+        console.log("interceptors response error >>> " , error);
         if (typeof hideLoading === 'function') hideLoading(); // 함수가 설정된 경우에만 호출
 
         const originalRequest = error.config;
 
+        // 401 에러 및 _retry 플래그 확인
         if (error.response && error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
+                // refresh-token 요청
                 const response = await axiosClient.post('/auth/refresh-token');
-                const newAccessToken = response.data.accessToken;
+                const newAccessToken = response.data.RTN_DATA.accessToken;
 
-                sessionStorage.setItem('accessToken', newAccessToken);
+                // 새로운 토큰 저장 및 요청 헤더 업데이트
+                localStorage.setItem('accessToken', newAccessToken);
                 originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 
+                // 원래의 요청을 재시도
                 return axiosClient(originalRequest);
             } catch (refreshError) {
+                // refresh-token 요청이 실패한 경우 처리
                 notify("세션이 만료되었습니다. 다시 로그인해주세요.", "warning");
-                sessionStorage.removeItem('accessToken');
+                localStorage.removeItem('accessToken');
+                // window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+                return Promise.reject(refreshError);
             }
         }
 

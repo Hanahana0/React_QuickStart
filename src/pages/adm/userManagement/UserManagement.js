@@ -2,13 +2,29 @@ import React, {useState, useEffect, useCallback} from 'react';
 import CustomGrid from '../../../components/CustomGrid';
 import {UserSelect, UserSave, UserUpdate, UserDelete} from './UserManagementService';
 import './UserManagement.css';
+import ContentSearchArea from "../../../layout/ContentSearchArea";
 
-import {notify} from '../../../components/toast'
+const UserManagement = ({tab}) => {
 
-const UserManagement = () => {
     const [rowData, setRowData] = useState([]);
     const [newRowId, setNewRowId] = useState(null); // 새로 추가된 행의 ID
     const [selectedUserIds, setSelectedUserIds] = useState(new Set()); // 삭제 체크박스 선택된 ID들
+
+    // 검색 조건 필드 정의 (추후 DB에서 동적으로 가져올 수 있음)
+    const searchFields = [
+        {id: "1", label: "DATE", type: "date", name: "startDate"},
+        {id: "2", label: "NAME", type: "text", name: "name"},
+        {id: "3", label: "ROLE", type: "text", name: "role"},      // 역할 필드 추가
+        {id: "4", label: "STATUS", type: "text", name: "status"}   // 상태 필드 추가
+    ];
+
+    // searchFields에 기반하여 searchConditions 초기화
+    const [searchConditions, setSearchConditions] = useState(
+        searchFields.reduce((acc, field) => {
+            acc[field.name] = ''; // 기본값은 빈 문자열로 설정
+            return acc;
+        }, {})
+    );
 
     // 칼럼 정의
     const columnDefs = [
@@ -25,22 +41,39 @@ const UserManagement = () => {
             },
         },
     ];
+    // 데이터조회
+    const handleSearch = async () => {
+        console.log("searchConditions >>> ", searchConditions)
+        const filteredConditions = Object.entries(searchConditions)
+            .reduce((acc, [key, value]) => {
+                if (value) acc[key] = value; // 빈 값이 아닌 조건만 필터링
+                return acc;
+            }, {});
 
-    // 데이터 조회
-    const fetchData = useCallback(async () => {
         try {
-            const response = await UserSelect();
-            const fetchedData = response.data.map(item => ({...item, status: 'loaded'})); // 조회된 데이터는 'loaded' 상태
-            setRowData(fetchedData);
+            const response = await UserSelect(filteredConditions);
+            const data = response.data.map(item => ({...item, status: 'loaded'}));
+            setRowData(data);
         } catch (error) {
             console.error("Failed to fetch users:", error);
         }
-    }, []);
+    }
 
-    // 초기 데이터 로드
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+    // 데이터 조회
+    // const fetchData = useCallback(async () => {
+    //     try {
+    //         const response = await UserSelect();
+    //         const fetchedData = response.data.map(item => ({...item, status: 'loaded'})); // 조회된 데이터는 'loaded' 상태
+    //         setRowData(fetchedData);
+    //     } catch (error) {
+    //         console.error("Failed to fetch users:", error);
+    //     }
+    // }, [searchConditions]);
+    //
+    // // 초기 데이터 로드
+    // useEffect(() => {
+    //     fetchData();
+    // }, [fetchData]);
 
     // 신규 행 추가
     const handleAdd = () => {
@@ -63,7 +96,7 @@ const UserManagement = () => {
             try {
                 await UserSave(newUser);
                 setNewRowId(null); // 새 행 스타일 제거
-                fetchData(); // 데이터 갱신
+                // fetchData(); // 데이터 갱신
             } catch (error) {
                 console.error("Failed to save user:", error);
             }
@@ -83,7 +116,7 @@ const UserManagement = () => {
         };
 
         UserUpdate(updatedUser)
-            .then(fetchData)
+            // .then(fetchData)
             .catch(error => console.error("Failed to update user:", error));
     };
 
@@ -103,10 +136,16 @@ const UserManagement = () => {
         <div className="user-management-container">
             <h2>User Management</h2>
             <div className="toolbar">
-                <button onClick={fetchData}>조회</button>
+                <button onClick={handleSearch}>조회</button>
                 <button onClick={handleAdd}>추가</button>
                 <button onClick={handleSaveNewRow}>저장</button>
             </div>
+            <ContentSearchArea
+                tab={tab}
+                searchFields={searchFields}
+                searchConditions={searchConditions}
+                setSearchConditions={setSearchConditions}
+            />
             <CustomGrid
                 columnDefs={columnDefs}
                 rowData={rowData}

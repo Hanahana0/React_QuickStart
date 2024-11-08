@@ -1,7 +1,7 @@
 import api from '../../../api/axiosClient';
 
 // 모든 유저를 조회하는 API 호출
-const UserSelect = () => api.post("/api/users/getAll");
+const UserSelect = (con) => api.post("/api/users/getAll",{...con});
 const UserSelectById = (params) => api.post("/api/users/getById", params);
 
 // 유저를 저장하는 API 호출

@@ -1,20 +1,24 @@
 /**
  * API 송신 전용 데이타 구조체
  */
-export default class ApiRequest {
-    constructor(url, data = {}) {
-        this.url  = url;  // api url 경로!
-        this.data = data; // 데이터 담을놈
+export default class ApiResponse {
+    constructor(response) {
+        // 서버에서 응답받은 필드 이름과 일치하도록 수정합니다.
+        this.RTN_DATA = response.rtn_DATA;       // 데이터
+        this.RTN_MSG = response.rtn_MSG;           // 메시지
+        this.RTN_CD = response.rtn_CD;           // 오류 코드 (성공 시 null)
     }
 
-    // 데이터 유효성 검사 (예: 모든 필수 필드가 포함되어 있는지 확인)
-    validate() {
-        if (!this.url) throw new Error("url cannot be empty.");
-        // 추가적인 유효성 검사 로직을 여기에 작성할 수 있습니다.
+    // 필요에 따라 데이터를 쉽게 접근할 수 있도록 getter를 추가할 수도 있습니다.
+    getData() {
+        return this.RTN_DATA;
     }
 
-    // 필요한 경우 요청 데이터를 변환하는 메서드 추가
-    transform() {
-        // 데이터 변환 로직 추가 (예: 날짜 포맷 변환 등)
+    getMessage() {
+        return this.RTN_MSG;
+    }
+
+    getErrorCode() {
+        return this.RTN_CD;
     }
 }

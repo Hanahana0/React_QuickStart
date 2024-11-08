@@ -6,6 +6,7 @@ import ErrorPage from '../pages/ErrorPage';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeTab, setActiveTab, setTabs } from '../state/tabsSlice';
 import LoadingIndicator from '../components/LoadingIndicator';
+
 import useTranslations from '../hooks/useTranslations';
 
 const ItemTypes = {
@@ -137,7 +138,7 @@ const Content = () => {
                                 style={{ display: activeTab === tab.path ? 'block' : 'none', height: '100%' }}
                             >
                                 <Suspense fallback={<LoadingIndicator />}>
-                                    <Component />
+                                    <Component tab = {tab}/>
                                 </Suspense>
                             </div>
                         );

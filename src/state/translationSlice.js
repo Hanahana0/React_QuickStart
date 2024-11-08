@@ -13,7 +13,7 @@ export const fetchTranslations = createAsyncThunk(
         }
 
         try {
-            const response = await axiosClient.get(`/api/translation?lang=${language}`);
+            const response = await axiosClient.post('/api/translation',{lang:language});
             const data = response.data.reduce((acc, item) => {
                 acc[item.msg] = item.translationText;
                 return acc;

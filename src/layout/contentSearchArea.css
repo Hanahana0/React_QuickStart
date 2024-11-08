@@ -1,0 +1,47 @@
+.content-search-area {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    margin-bottom: 16px;
+}
+
+.content-search-area h2 {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+.search-fields-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* 각 필드 간의 간격 */
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 100px; /* 각 필드의 최소 너비 */
+    max-width: 150px; /* 최대 너비 */
+}
+
+.search-field label {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.search-field input {
+    padding: 2px;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.search-field input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
+}

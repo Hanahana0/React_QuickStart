@@ -1,9 +1,10 @@
 // src/pages/Login.js
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { login } from '../state/authSlice';
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {login} from '../state/authSlice';
+import {useNavigate} from 'react-router-dom';
 import './login.css';
+import {notify} from "../components/toast";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -11,13 +12,14 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
+    const domain = "test";
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await dispatch(login(username, password));
-
+        const result = await dispatch(login(domain, username, password));
         if (result.success) {
-            navigate('/'); // 로그인 성공 시
+            // navigate('/'); // 로그인 성공 시
+            setError('');
+            notify("로그인성공!" );
         } else {
             setError(result.message); // 로그인 실패 시 에러 메시지 설정
         }
