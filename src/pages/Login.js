@@ -44,7 +44,6 @@ const Login = () => {
 
     const test = async () => {
         // return;
-
         try {
             const request = new ApiRequest('loginInfo');
             const response = await axiosClient.post("/Login.do", request);
@@ -55,7 +54,6 @@ const Login = () => {
     }
     const test2 = async () => {
         // return;
-
         try {
             const request = new ApiRequest('gsdgdf');
             const response = await axiosClient.post("/Login.do", request);
@@ -63,8 +61,6 @@ const Login = () => {
         } catch (e) {
             console.log(e);
         }
-
-
     }
 
 
