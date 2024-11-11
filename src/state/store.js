@@ -8,17 +8,19 @@ import authReducer from './authSlice';
 import loadingReducer from './loadingSlice';
 import tabsReducer from './tabsSlice';
 import translationReducer from './translationSlice';
+import menuReducer from './menuSlice';
 
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth', 'tabs', 'translation']
+    whitelist: ['auth', 'tabs', 'translation','menu']
 };
 
 const rootReducer = combineReducers({
     auth: authReducer,
     loading: loadingReducer,
+    menu: menuReducer,
     tabs: tabsReducer,
     translation: translationReducer
 });
@@ -30,7 +32,7 @@ const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
-                ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+                ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE','persist/PURGE'],
                 ignoredPaths: ['register', 'rehydrate']
             }
         })

@@ -1,12 +1,14 @@
 // src/layout/Header.js
 import React from 'react';
-import useTranslations from '../hooks/useTranslations';
+import { useDispatch } from 'react-redux';
+import { logout } from '../state/authSlice';
+import './layout.css';
 
 const Header = () => {
-    const { language, changeLanguage } = useTranslations();
+    const dispatch = useDispatch();
 
-    const handleLanguageChange = (event) => {
-        changeLanguage(event.target.value);
+    const handleLogout = () => {
+        dispatch(logout());
     };
 
     return (
@@ -15,10 +17,9 @@ const Header = () => {
                 <span className="header-logo">QLinx</span>
             </div>
             <div className="header-right">
-                <select value={language} onChange={handleLanguageChange} className="language-selector">
-                    <option value="ko">Ko</option>
-                    <option value="en">En</option>
-                </select>
+                <button onClick={handleLogout} className="logout-button">
+                    Logout
+                </button>
             </div>
         </header>
     );

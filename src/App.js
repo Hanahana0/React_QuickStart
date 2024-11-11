@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { store, persistor } from './state/store';
 import { setLoadingFunctions } from './api/axiosClient';
 import { showLoading, hideLoading } from './state/loadingSlice';
+import { checkTokenValidity } from './state/authSlice';
 
 import './layout/layout.css';
 import LoadingIndicator from './components/LoadingIndicator';
@@ -21,21 +22,21 @@ const AppContent = () => {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
     useEffect(() => {
-        // 로딩 함수 설정을 여기서 수행하여 dispatch 사용 가능하게 설정
         setLoadingFunctions(
             () => dispatch(showLoading()),
             () => dispatch(hideLoading())
         );
+
+        // 앱이 처음 로드될 때 토큰 유효성 확인
+        dispatch(checkTokenValidity());
     }, [dispatch]);
 
-    const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const isLoading = useSelector((state) => state.loading.isLoading);
 
     if (isLoading) {
         return <LoadingIndicator />;
     }
-
 
     return (
         <Routes>
@@ -46,15 +47,13 @@ const AppContent = () => {
                         <Header />
                         <div className="main-layout">
                             <div className={`sidebar-container ${isSidebarVisible ? 'open' : 'closed'}`}>
-                                <Sidebar
-                                    className={isSidebarVisible ? 'open' : 'closed'}
-                                />
+                                <Sidebar className={isSidebarVisible ? 'open' : 'closed'} />
                                 <SidebarController
                                     isSidebarVisible={isSidebarVisible}
-                                    onToggleSidebar={toggleSidebar}
+                                    onToggleSidebar={() => setIsSidebarVisible(!isSidebarVisible)}
                                 />
                             </div>
-                            <Content/>
+                            <Content />
                         </div>
                     </>
                 ) : <Navigate to="/login" />

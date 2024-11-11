@@ -3,6 +3,7 @@ import axios from 'axios';
 import ApiRequest from "./ApiRequest";
 import ApiResponse from "./ApiResponse";
 import {notify} from '../components/toast';
+import {persistor} from "../state/store";
 
 let showLoading = null;
 let hideLoading = null;
@@ -29,7 +30,7 @@ export const setLoadingFunctions = (show, hide) => {
 const axiosClient = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL,
     // timeout: 2000,
-    withCredentials: true,
+    // withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -38,12 +39,13 @@ const axiosClient = axios.create({
 // 요청 인터셉터
 axiosClient.interceptors.request.use(
     (config) => {
-
         if (typeof showLoading === 'function') showLoading(); // 함수가 설정된 경우에만 호출
-
+        debugger;
         // ApiRequest를 통해 요청 데이터 구조 통일
-        // const requestData = new ApiRequest(config.data.P_ACT,config.data.P_PARAM);
+        // const requestData = new ApiRequest(config.data);
         // requestData.validate(); // 요청 데이터 유효성 검사
+
+        debugger;
         // config.data = requestData;
 
         const accessToken = localStorage.getItem('accessToken');
@@ -61,9 +63,8 @@ axiosClient.interceptors.request.use(
 // 응답 인터셉터
 axiosClient.interceptors.response.use(
     (response) => {
-
+        //debugger;
         if (typeof hideLoading === 'function') hideLoading(); // 함수가 설정된 경우에만 호출
-
         // ApiResponse를 통해 응답 데이터를 가공하여 통일된 형식으로 반환
         const apiResponse = new ApiResponse(response.data);
         return apiResponse;
@@ -73,44 +74,48 @@ axiosClient.interceptors.response.use(
 
         const originalRequest = error.config;
 
-        // 401 에러 및 _retry 플래그 확인
-        // if (error.response && error.response.status === 401 && !originalRequest._retry) {
-        //     originalRequest._retry = true;
-        //
-        //     try {
-        //         // 로컬스토리지에서 리프레시 토큰 가져오기
-        //         const refreshToken = localStorage.getItem('refreshToken');
-        //
-        //         if (!refreshToken) {
-        //             throw new Error("No refresh token available");
-        //         }
-        //
-        //         // refresh-token 요청을 위한 ApiRequest 생성
-        //         const request = new ApiRequest('REFRESH_TOKEN', { refreshToken });
-        //
-        //         // refresh-token 요청
-        //         const response = await axiosClient.post('/auth/refresh-token', request);
-        //         const newAccessToken = response.RTN_DATA.accessToken;
-        //
-        //         // 새로운 엑세스 토큰 저장 및 원래 요청 헤더 업데이트
-        //         localStorage.setItem('accessToken', newAccessToken);
-        //         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-        //
-        //         // 원래의 요청을 재시도
-        //         return axiosClient(originalRequest);
-        //     } catch (refreshError) {
-        //         // refresh-token 요청이 실패한 경우 처리
-        //         notify("세션이 만료되었습니다. 다시 로그인해주세요.", "warning");
-        //         localStorage.removeItem('accessToken');
-        //         localStorage.removeItem('refreshToken');
-        //         // window.location.href = '/login'; // 로그인 페이지로 리다이렉트
-        //         return Promise.reject(refreshError);
-        //     }
-        // }
+        //401 에러 및 _retry 플래그 확인
+        if (error.response && error.response.status === 401 && !originalRequest._retry && originalRequest.url !== '/Login.do') {
+            originalRequest._retry = true;
 
+            try {
+                // 로컬스토리지에서 리프레시 토큰 가져오기
+                const refreshToken = localStorage.getItem('refreshToken');
+
+                if (!refreshToken) {
+                    throw new Error("No refresh token available");
+                }
+
+                // refresh-token 요청을 위한 ApiRequest 생성
+                // const request = new ApiRequest('REFRESH_TOKEN', { refreshToken });
+                //
+                // // refresh-token 요청
+                // const response = await axiosClient.post('/auth/refresh-token', request);
+
+                const request = new ApiRequest('/refresh-token', {},{ refreshToken:refreshToken });
+                const response = await axiosClient.post('/Login.do', request);
+                const newAccessToken = response.RTN_DATA.accessToken;
+
+                // 새로운 엑세스 토큰 저장 및 원래 요청 헤더 업데이트
+                localStorage.setItem('accessToken', newAccessToken);
+                originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+
+                // 원래의 요청을 재시도
+                return axiosClient(originalRequest);
+            } catch (refreshError) {
+                // refresh-token 요청이 실패한 경우 처리
+                notify("세션이 만료되었습니다. 다시 로그인해주세요.", "warning");
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                // localStorage.removeItem('persist:root');
+                // await persistor.purge(); // 영구적으로 저장된 상태 초기화
+                // window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+                return Promise.reject(refreshError);
+            }
+        }
         if (error.code === 'ECONNABORTED') {
             notify("요청 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.", "error");
-        } else if (!error.response) {
+        } else if (error.code === 'ERR_NETWORK') {
             notify("네트워크 문제가 발생했습니다. 인터넷 연결을 확인해주세요.", "error");
         } else {
             switch (error.response.status) {
@@ -123,7 +128,8 @@ axiosClient.interceptors.response.use(
                 case 500:
                     notify("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.", "error");
                     break;
-                case 999:
+                case 401: case 999:
+                    // 처리안할 부분은 여기에 추가 하면 됨
                     // 로그인 실패시임 이떈 처리할 거 없음
                     break;
                 default:

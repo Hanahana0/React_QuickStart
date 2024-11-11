@@ -3,16 +3,18 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {openTab} from '../state/tabsSlice';
 import useTranslations from '../hooks/useTranslations';
-import axiosClient from '../api/axiosClient';
-import comnService from '../comnServices/ComService'
 import './layout.css';
-import comService from "../comnServices/ComService";
+
+import {useSelector} from 'react-redux';
+import {fetchMenus} from '../state/menuSlice'
 
 const Sidebar = ({className}) => {
     const {getTranslation} = useTranslations();
-    const [menus, setMenus] = useState([]);
+    // const [menus, setMenus] = useState([]);
+    const menus = useSelector((state) => state.menu.items);
     const [openMenus, setOpenMenus] = useState({});
     const dispatch = useDispatch();
+
 
     // useEffect(() => {
     //     const fetchMenus = async () => {
@@ -27,12 +29,10 @@ const Sidebar = ({className}) => {
     //     fetchMenus();
     // }, []);
     useEffect(() => {
-        const menuCall = async () => {
-            const menuList = await comService.getMenus();
-            setMenus(menuList.RTN_DATA)
+        if (menus.length === 0) {
+            dispatch(fetchMenus());
         }
-        menuCall();
-    },[])
+    }, [dispatch, menus.length]);
     const handleMenuClick = (menu) => {
         if (menu.path) {
             dispatch(openTab({path: menu.path, title: menu.title}));

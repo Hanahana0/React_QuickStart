@@ -7,20 +7,20 @@ export const fetchTranslations = createAsyncThunk(
     async (language, { getState, rejectWithValue }) => {
         const { translation } = getState();
 
-        // 이미 해당 언어로 번역 데이터가 로드된 경우 API 호출을 건너뜁니다.
+        // 이미 해당 언어의 번역 데이터가 있는 경우 API 호출을 생략
         if (translation.translations[language]) {
             return { language, data: translation.translations[language] };
         }
-
+        return true;
         try {
-            const response = await axiosClient.post('/api/translation',{lang:language});
-            const data = response.data.reduce((acc, item) => {
+            const response = await axiosClient.post('/lang', { lang: language });
+            const data = response.RTN_DATA.reduce((acc, item) => {
                 acc[item.msg] = item.translationText;
                 return acc;
             }, {});
             return { language, data };
         } catch (error) {
-            console.error("다국어 데이터를 가져오는 중 오류가 발생했습니다:", error);
+            console.error("Error fetching translations:", error);
             return rejectWithValue(error.response?.data || "Fetch error");
         }
     }
@@ -49,11 +49,7 @@ const translationSlice = createSlice({
             .addCase(fetchTranslations.fulfilled, (state, action) => {
                 state.loading = false;
                 const { language, data } = action.payload;
-                // translations 객체에 특정 언어의 데이터를 저장
-                state.translations = {
-                    ...state.translations,
-                    [language]: data,
-                };
+                state.translations[language] = data;
                 state.language = language;
                 state.lastFetchedLanguage = language;
             })
