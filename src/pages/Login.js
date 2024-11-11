@@ -45,20 +45,26 @@ const Login = () => {
     const test = async () => {
         // return;
 
-        const request = new ApiRequest('loginInfo' );
-
-        const response = await axiosClient.post("/Login.do", request);
-
-        console.log("response >>> " , response);
+        try {
+            const request = new ApiRequest('loginInfo');
+            const response = await axiosClient.post("/Login.do", request);
+            console.log("response >>> ", response);
+        } catch (e) {
+            console.log(e);
+        }
     }
     const test2 = async () => {
         // return;
 
-        const request = new ApiRequest('gsdgdf' );
+        try {
+            const request = new ApiRequest('gsdgdf');
+            const response = await axiosClient.post("/Login.do", request);
+            console.log("response >>> ", response);
+        } catch (e) {
+            console.log(e);
+        }
 
-        const response = await axiosClient.post("/Login.do", request);
 
-        console.log("response >>> " , response);
     }
 
 

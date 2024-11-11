@@ -55,4 +55,23 @@ const getTranslationByLang = async (lang) => {
     }
 };
 
+// 로그인 이후에 필요한 정보들 조회! 메세지, 라벨메세지, 공통코드
+
+const getLoginInfo = async () => {
+
+    try {
+        const request = new ApiRequest('loginInfo', );
+        const response = await axiosClient.post(`/Login.do`, request);
+        //
+        // if (response.RTN_CD !== null) {
+        //     throw new Error(response.RTN_MSG || 'Error fetching menus');
+        // }
+
+        return response;
+    } catch (error) {
+        console.error("Error in getTranslationByLang:", error);
+        throw error;
+    }
+}
+
 export default {getMenus, getTranslationAll, getTranslationByLang};

@@ -106,7 +106,9 @@ export const login = (domainKey, userId, password, language) => async (dispatch)
         // console.log(translationLangList);
         // dispatch(fetchTranslations()); // 다국어세팅
         // dispatch(fetchMenus()); // 메뉴 세팅
-
+        // const loginInfo = await comService.getLoginInfo();
+        //
+        // console.log("loginInfo >>> " , loginInfo);
 
         return {success: true};
     } catch (error) {

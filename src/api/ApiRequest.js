@@ -9,7 +9,7 @@ export default class ApiRequest {
         this.P_PARAM = params;   // 데이터가 담길 키-오브젝트 구조
         const userInfo = this.getCurrentUserInfo();
         debugger;
-        // this.LANG_CD = userInfo.LANG_CD;
+        this.LANG_CD = userInfo.LANG_CD;
         this.DOMAINKEY = userInfo.DOMAINKEY;
         this.USERID = userInfo.USERID;
         // extraFields 객체의 모든 키-값 쌍을 현재 인스턴스에 추가
