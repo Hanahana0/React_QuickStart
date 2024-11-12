@@ -1,6 +1,6 @@
 // src/pages/Login.js
 import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {login} from '../state/authSlice';
 import {useNavigate} from 'react-router-dom';
 import './login.css';
@@ -8,6 +8,8 @@ import useTranslations from '../hooks/useTranslations';
 import {notify} from "../components/toast";
 import axiosClient from "../api/axiosClient";
 import ApiRequest from "../api/ApiRequest";
+import useAuth from "../hooks/useAuth";
+
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -18,6 +20,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const [selectedLanguage, setSelectedLanguage] = useState('EN'); // 선택된 언어 상태 추가
 
+    const {userInfo, updateTIMEZONE, updateLANG_CD} = useAuth();
     const [isLogin, setIsLogin] = useState(false);
     const domainKey = "GUS";
 
@@ -38,6 +41,7 @@ const Login = () => {
 
     const handleLanguageChange = (event) => {
         const newLanguage = event.target.value;
+        updateLANG_CD(newLanguage);
         setSelectedLanguage(newLanguage); // 선택된 언어 상태 업데이트
         // changeLanguage(newLanguage); // 언어 변경 훅 호출
     };
@@ -62,7 +66,20 @@ const Login = () => {
             console.log(e);
         }
     }
+    const test3 = async () => {
+        console.log("userInfo >>> ", userInfo)
 
+    }
+    const test4 = () => {
+        console.log("timezone set!!!");
+        updateTIMEZONE("+00:00");
+    }
+
+    const test5 = () => {
+        console.log("timezone del!!!");
+        updateTIMEZONE(null);
+    }
+    
 
     return (
         <div className="login-container">
@@ -103,6 +120,9 @@ const Login = () => {
                 </form>
                 <button onClick={test}> 테스트</button>
                 <button onClick={test2}> 테스트2</button>
+                <button onClick={test3}> 유저정보확인 콘솔창</button>
+                <button onClick={test4}> 타임존세팅</button>
+                <button onClick={test5}> 타임존지우기</button>
             </div>
         </div>
     );

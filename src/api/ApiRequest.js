@@ -1,17 +1,18 @@
 import Util from '../lib/Util';
-
+import useAuth from '../hooks/useAuth';
 /**
  * API 수신 전용 데이타 구조체
  */
 export default class ApiRequest {
     constructor(action, params = {}, extraFields = {}) {
         this.P_ACT = action;     // Controller에서 분기 처리할 스트링 값
-        this.P_PARAM = params;   // 데이터가 담길 키-오브젝트 구조
+        // this.P_PARAM = params;   // 데이터가 담길 키-오브젝트 구조
         const userInfo = this.getCurrentUserInfo();
         debugger;
         this.LANG_CD = userInfo.LANG_CD;
         this.DOMAINKEY = userInfo.DOMAINKEY;
         this.USERID = userInfo.USERID;
+        this.GV_TIMEZONE = userInfo.GV_TIMEZONE;
         // extraFields 객체의 모든 키-값 쌍을 현재 인스턴스에 추가
         Object.assign(this, extraFields);
 
@@ -28,21 +29,47 @@ export default class ApiRequest {
     // 현재 유저 정보를 가져오는 메서드
     getCurrentUserInfo() {
         // 유저정보 세팅
-        const userInfo = localStorage.getItem('auth');
-        console.log("userInfo >>> " , userInfo);
-        if (!Util.isNull(userInfo)) {
+
+        const persistedState = localStorage.getItem('persist:root');
+
+        if (persistedState) {
             try {
-                const parsedInfo = JSON.parse(userInfo); // JSON 파싱
+                // JSON 파싱
+                const parsedState = JSON.parse(persistedState);
+
+                // 필요한 상태 가져오기 (예: auth 정보)
+                const userInfo = JSON.parse(parsedState.auth);
+                const DOMAINKEY = userInfo.DOMAINKEY;
+                const USERID = userInfo.USERID;
+                const LANG_CD = userInfo.LANG_CD;
+                const GV_TIMEZONE = userInfo.GV_TIMEZONE;
+
                 return {
-                    DOMAINKEY: parsedInfo.DOMAINKEY || null,
-                    USERID: parsedInfo.USERID || null,
-                    LANG_CD: parsedInfo.LANG_CD || 'en'
+                    DOMAINKEY: DOMAINKEY || null,
+                    USERID: USERID || null,
+                    LANG_CD: LANG_CD || 'en',
+                    GV_TIMEZONE: GV_TIMEZONE || null
                 };
             } catch (error) {
-                console.error("Failed to parse user info from localStorage:", error);
-                return {};
+                console.error("Failed to parse persisted state:", error);
             }
         }
+
+        // const userInfo = localStorage.getItem('auth');
+        // console.log("userInfo >>> " , userInfo);
+        // if (!Util.isNull(userInfo)) {
+        //     try {
+        //         const parsedInfo = JSON.parse(userInfo); // JSON 파싱
+        //         return {
+        //             DOMAINKEY: parsedInfo.DOMAINKEY || null,
+        //             USERID: parsedInfo.USERID || null,
+        //             LANG_CD: parsedInfo.LANG_CD || 'en'
+        //         };
+        //     } catch (error) {
+        //         console.error("Failed to parse user info from localStorage:", error);
+        //         return {};
+        //     }
+        // }
 
         // 유저 정보가 없는 경우 기본값 반환
         return {};

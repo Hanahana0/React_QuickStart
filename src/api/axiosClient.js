@@ -42,6 +42,9 @@ axiosClient.interceptors.request.use(
         if (typeof showLoading === 'function') showLoading(); // 함수가 설정된 경우에만 호출
         debugger;
         // ApiRequest를 통해 요청 데이터 구조 통일
+        // config.data = config.data ||
+
+
         // const requestData = new ApiRequest(config.data);
         // requestData.validate(); // 요청 데이터 유효성 검사
 
@@ -64,6 +67,7 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
     (response) => {
         //debugger;
+        console.log("response >>> ", response);
         if (typeof hideLoading === 'function') hideLoading(); // 함수가 설정된 경우에만 호출
         // ApiResponse를 통해 응답 데이터를 가공하여 통일된 형식으로 반환
         const apiResponse = new ApiResponse(response.data);

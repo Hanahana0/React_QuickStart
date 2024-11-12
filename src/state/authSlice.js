@@ -16,45 +16,59 @@ export const authSlice = createSlice({
     initialState: {
         isLoggedIn: false,
         loading: false,
-        userInfo: null,
+        // userInfo: null,
         DOMAINKEY: null,
         USERID: null,
         LANG_CD: null,
+        GV_TIMEZONE: null,
     },
     reducers: {
         setLoginStart: (state) => {
             state.loading = true;
         },
         setLoginSuccess: (state, action) => {
+            console.log("action >>> " , action);
             state.isLoggedIn = true;
             state.loading = false;
-            state.userInfo = action.payload;
+            // state.userInfo = action.payload;
             // API 송신시 계속 담고다녀야함 ApiRequest에서 참조시켜얗마
-            state.USERID        = null;
-            state.LANG_CD       = null;
+            state.USERID        = action.payload.USERID;
+            state.LANG_CD       = action.payload.LANG_CD;
+            state.DOMAINKEY     = action.payload.DOMAINKEY;
             state.GV_TIMEZONE   = null;
-            state.DOMAINKEY     = null;
 
         },
         setLoginFailure: (state) => {
             state.isLoggedIn = false;
             state.loading = false;
-            state.userInfo = null;
+            // state.userInfo = null;
             state.DOMAINKEY = null;
             state.USERID = null;
             state.LANG_CD = null;
+            state.GV_TIMEZONE = null;
         },
         setLogout: (state) => {
             state.isLoggedIn = false;
-            state.userInfo = null;
+            // state.userInfo = null;
             state.DOMAINKEY = null;
             state.USERID = null;
             state.LANG_CD = null;
+            state.GV_TIMEZONE = null;
+        },
+        // 개별 상태 업데이트 액션 추가
+        setDOMAINKEY: (state, action) => {
+            state.DOMAINKEY = action.payload;
+        },
+        setLANG_CD: (state, action) => {
+            state.LANG_CD = action.payload;
+        },
+        setGV_TIMEZONE: (state, action) => {
+            state.GV_TIMEZONE = action.payload;
         },
     },
 });
 
-export const {setLoginStart, setLoginSuccess, setLoginFailure, setLogout} = authSlice.actions;
+export const {setLoginStart, setLoginSuccess, setLoginFailure, setLogout,setDOMAINKEY,setLANG_CD,setGV_TIMEZONE} = authSlice.actions;
 
 export const login = (domainKey, userId, password, language) => async (dispatch) => {
     dispatch(setLoginStart());
@@ -77,7 +91,7 @@ export const login = (domainKey, userId, password, language) => async (dispatch)
         //     return {success: false, message: "아이디나 비밀번호를 확인하세요."};
         // }
 
-        const {accessToken, refreshToken, userInfo} = response.RTN_DATA;
+        const {accessToken, refreshToken} = response.RTN_DATA;
 
         // 토큰을 localStorage에 저장
         // localStorage.removeItem('persist:root');
@@ -85,20 +99,12 @@ export const login = (domainKey, userId, password, language) => async (dispatch)
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
 
-        // 로그인 성공 시 유저 정보(localStorage에 JSON 형식으로 저장)
-        localStorage.setItem('auth', JSON.stringify({
-            DOMAINKEY: domainKey,
-            USERID: userId,
-            LANG_CD: language || 'en'
-        }));
-
         dispatch(setLoginSuccess({
-            userInfo,
             DOMAINKEY: domainKey,
             USERID: userId,
             LANG_CD: language || 'en'
         }));
-
+        debugger;
         // 로그인 성공 시 추가 데이터 로드 (필요시 활성화)
         // const menuList = await comService.getMenus();
         // console.log(menuList);

@@ -32,3 +32,27 @@
 //     }
 //     return context;
 // };
+
+import {useSelector, useDispatch} from "react-redux";
+import {setDOMAINKEY, setLANG_CD, setGV_TIMEZONE} from "../state/authSlice";
+
+const useAuth = () => {
+    const dispatch = useDispatch();
+    const userInfo = useSelector((state) => state.auth);
+
+    // 개별 상태를 업데이트하는 함수들
+    const updateDOMAINKEY = (domainKey) => dispatch(setDOMAINKEY(domainKey));
+    const updateLANG_CD = (langCd) => dispatch(setLANG_CD(langCd));
+    const updateTIMEZONE = (timezone) => dispatch(setGV_TIMEZONE(timezone));
+
+    // 필요한 값과 함수들을 반환
+    return {
+        // ...userInfo,
+        userInfo,
+        updateDOMAINKEY,
+        updateLANG_CD,
+        updateTIMEZONE
+    };
+}
+
+export default useAuth;
